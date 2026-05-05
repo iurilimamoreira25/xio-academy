@@ -590,12 +590,12 @@
     const founders = [
       {
         name: 'Iuri Moreira', age: 21, role: 'Co-fundador', loc: 'Parauapebas · PA',
-        photo: 'assets/iuri.jpg',
+        photo: 'assets/iuri.jpg', photoPos: 'center top',
         bio: 'Estudante de Odontologia em Parauapebas. Estuda IA por conta própria há dois anos e acredita que a próxima geração de empreendedores do Pará vai nascer da intersecção entre ciência, tecnologia e ambição local.',
       },
       {
         name: 'Octávio Lobo', age: 21, role: 'Co-fundador', loc: 'Vancouver · CA',
-        photo: 'assets/octavio.jpg',
+        photo: 'assets/octavio.jpg', photoPos: 'center 70%',
         bio: 'Web Designer em Vancouver. Cresceu em Parauapebas, atravessou um continente e voltou com a convicção de que talento daqui não precisa sair daqui — precisa apenas de método, ferramenta e visão.',
       },
     ];
@@ -618,7 +618,7 @@
               {founders.map(f => (
                 <div key={f.name} style={{ background: 'var(--bg)', padding: '2.5rem 2rem' }}>
                   <div style={{ aspectRatio: '4/5', overflow: 'hidden', border: '1px solid var(--line)' }}>
-                    <img src={f.photo} alt={f.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }} />
+                    <img src={f.photo} alt={f.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: f.photoPos, display: 'block' }} />
                   </div>
                   <div style={{ marginTop: '2rem' }}>
                     <h3 className="font-display" style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 300, marginBottom: '0.25rem' }}>
@@ -691,7 +691,7 @@
               Doze segundos para entender <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>o porquê.</em>
             </h2>
 
-            <div style={{ maxWidth: 800 }}>
+            <div style={{ maxWidth: 900, margin: '0 auto' }}>
               {/* Player frame */}
               <div style={{
                 aspectRatio: '16/9', border: '1px solid var(--line-md)',
@@ -765,7 +765,7 @@
                 </div>
               </div>
 
-              <p className="eyebrow" style={{ marginTop: '1rem', color: 'var(--muted)', fontSize: '10px' }}>
+              <p className="eyebrow" style={{ marginTop: '1rem', color: 'var(--muted)', fontSize: '10px', textAlign: 'center' }}>
                 Recorte de 12 segundos · sem áudio para autoplay · com som ao reproduzir
               </p>
             </div>
