@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-accent="gold">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XIO Academy — Pré-lançamento · 19 de Maio 2026</title>
+  <meta name="description" content="XIO Academy — Academia de IA fundada em Parauapebas, Pará. Lançamento oficial em 19 de maio de 2026." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ["'Cormorant Garamond'", 'Georgia', 'serif'],
+            sans: ["'Inter Tight'", 'sans-serif'],
+            mono: ["'JetBrains Mono'", 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- React 18.3.1 + ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+
+  <!-- Babel Standalone -->
+  <script src="https://unpkg.com/@babel/standalone@7.24.4/babel.min.js"></script>
+
+  <style>
+    /* ── CSS Custom Properties ── */
+    :root {
+      --bg:       #060606;
+      --surface:  #0c0c0c;
+      --ink:      #F5F4EE;
+      --dim:      rgba(245,244,238,0.62);
+      --muted:    rgba(245,244,238,0.42);
+      --line:     rgba(245,244,238,0.10);
+      --line-md:  rgba(245,244,238,0.18);
+      --primary:  oklch(0.80 0.065 80);
+      --blue:     oklch(0.58 0.18 262);
+      --accent:   var(--primary);
+    }
+    html[data-accent="royal"]  { --accent: var(--blue); }
+    html[data-accent="duo"]    { --accent: var(--primary); }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    ::selection { background: var(--accent); color: #060606; }
+
+    /* ── Typography helpers ── */
+    .font-display  { font-family: 'Cormorant Garamond', Georgia, serif; }
+    .font-mono     { font-family: 'JetBrains Mono', monospace; }
+    .font-sans     { font-family: 'Inter Tight', sans-serif; }
+
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── Hairline border util ── */
+    .border-line    { border-color: var(--line); }
+    .border-line-md { border-color: var(--line-md); }
+
+    /* ── Gold accent text ── */
+    .text-accent  { color: var(--accent); }
+    .bg-accent    { background: var(--accent); }
+    .border-accent{ border-color: var(--accent); }
+
+    /* ── Section rhythm ── */
+    .section-pad { padding-top: 7rem; padding-bottom: 7rem; }
+    @media (min-width: 768px) {
+      .section-pad { padding-top: 10rem; padding-bottom: 10rem; }
+    }
+
+    /* ── Marquee ── */
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .marquee-track { animation: marquee 50s linear infinite; display: flex; white-space: nowrap; }
+    .marquee-track:hover { animation-play-state: paused; }
+
+    /* ── Conic spin ── */
+    @keyframes conic-spin {
+      from { transform: translate(-50%,-50%) rotate(0deg); }
+      to   { transform: translate(-50%,-50%) rotate(360deg); }
+    }
+    .conic-bg {
+      position: absolute; left: 50%; top: 50%;
+      width: 140vmax; height: 140vmax;
+      background: conic-gradient(
+        transparent 0deg,
+        oklch(0.80 0.065 80 / 0.04) 60deg,
+        transparent 120deg,
+        oklch(0.80 0.065 80 / 0.03) 200deg,
+        transparent 300deg,
+        oklch(0.80 0.065 80 / 0.04) 360deg
+      );
+      animation: conic-spin 60s linear infinite;
+      pointer-events: none;
+    }
+
+    /* ── FAQ accordion ── */
+    .faq-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1);
+    }
+    .faq-body.open { max-height: 600px; }
+
+    /* ── Video progress ── */
+    @keyframes progress-fill {
+      from { width: 0; }
+      to   { width: 100%; }
+    }
+
+    /* ── Nav blur ── */
+    .nav-scrolled {
+      background: rgba(6,6,6,0.85) !important;
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* ── Floating CTA ── */
+    .floating-cta {
+      position: fixed; bottom: 1.5rem; left: 1rem; right: 1rem;
+      z-index: 60;
+      transform: translateY(120%);
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    .floating-cta.visible { transform: translateY(0); }
+
+    /* ── Diagonal stripe pattern ── */
+    .diagonal-stripe {
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(245,244,238,0.03) 0px,
+        rgba(245,244,238,0.03) 1px,
+        transparent 1px,
+        transparent 12px
+      );
+    }
+
+    /* ── Tweaks panel ── */
+    .tweaks-panel {
+      position: fixed; bottom: 2rem; right: 2rem;
+      z-index: 80;
+      background: var(--surface);
+      border: 1px solid var(--line-md);
+      padding: 1.25rem;
+      width: 220px;
+      transition: transform 0.3s ease;
+    }
+    .tweaks-panel.hidden { transform: translateX(calc(100% + 2.5rem)); }
+
+    /* ── Plan card ── */
+    .plan-featured {
+      border-top: 1px solid var(--accent);
+    }
+
+    /* ── Stamp circle text ── */
+    @keyframes stamp-rotate {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* ── Section index separator ── */
+    .section-sep { border-top: 1px solid var(--line); }
+
+    /* ── Responsive display heading ── */
+    .display-xl {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      font-size: clamp(3rem, 9vw, 8.5rem);
+    }
+    .display-lg {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      font-size: clamp(2.25rem, 6vw, 5.5rem);
+    }
+    .display-md {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      font-size: clamp(1.75rem, 4vw, 3.5rem);
+    }
+
+    /* ── Pill button ── */
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--ink); color: #060606;
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 13px; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.85rem 2.25rem;
+      border-radius: 100px;
+      border: none; cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+    .btn-primary:hover { background: var(--accent); color: #060606; }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: transparent; color: var(--ink);
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 13px; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.75rem 1.75rem;
+      border-radius: 100px;
+      border: 1px solid var(--line-md); cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+    .btn-outline:hover { border-color: var(--ink); }
+
+    .btn-outline-accent {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: transparent; color: var(--accent);
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 13px; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.75rem 1.75rem;
+      border-radius: 100px;
+      border: 1px solid var(--accent); cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+    .btn-outline-accent:hover { background: var(--accent); color: #060606; }
+
+    /* ── Input ── */
+    .xio-input {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--line-md);
+      color: var(--ink);
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 14px; font-weight: 300;
+      padding: 0.85rem 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .xio-input::placeholder { color: var(--muted); }
+    .xio-input:focus { border-color: var(--accent); }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--line-md); border-radius: 2px; }
+
+    /* ── Responsive tweaks ── */
+    @media (max-width: 640px) {
+      .section-pad { padding-top: 5rem; padding-bottom: 5rem; }
+      .display-xl  { font-size: clamp(2.5rem, 11vw, 4.5rem); }
+      .display-lg  { font-size: clamp(2rem, 8vw, 3rem); }
+      .display-md  { font-size: clamp(1.5rem, 7vw, 2.25rem); }
+    }
+
+    @media (max-width: 360px) {
+      body { font-size: 14px; }
+    }
+
+    /* ── du-accent variations ── */
+    html[data-accent="duo"] .plan-featured { border-top-color: var(--primary); }
+    html[data-accent="duo"] .plan-featured .price-display { color: var(--primary); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- SECTIONS -->
+  <script type="text/babel" data-type="module">
+    const { useState, useEffect, useRef, useCallback } = React;
+
+    /* ── LAUNCH TARGET ── */
+    const LAUNCH_DATE = new Date('2026-05-19T21:15:00-03:00');
+
+    /* ── COUNTDOWN HOOK ── */
+    function useCountdown(target) {
+      const calc = () => {
+        const diff = target - Date.now();
+        if (diff <= 0) return { dias: 0, hrs: 0, min: 0, seg: 0, launched: true };
+        const dias = Math.floor(diff / 86400000);
+        const hrs  = Math.floor((diff % 86400000) / 3600000);
+        const min  = Math.floor((diff % 3600000) / 60000);
+        const seg  = Math.floor((diff % 60000) / 1000);
+        return { dias, hrs, min, seg, launched: false };
+      };
+      const [t, setT] = useState(calc);
+      useEffect(() => {
+        const id = setInterval(() => setT(calc()), 1000);
+        return () => clearInterval(id);
+      }, []);
+      return t;
+    }
+
+    /* ── SCROLL HOOK ── */
+    function useScrollY() {
+      const [y, setY] = useState(0);
+      useEffect(() => {
+        const h = () => setY(window.scrollY);
+        window.addEventListener('scroll', h, { passive: true });
+        return () => window.removeEventListener('scroll', h);
+      }, []);
+      return y;
+    }
+
+    /* ── PAD2 ── */
+    const p2 = n => String(n).padStart(2, '0');
+
+    /* ─────────────────────────────────────────────
+       0. LAUNCH BANNER
+    ───────────────────────────────────────────── */
+    function LaunchBanner() {
+      return (
+        <div style={{
+          background: 'var(--accent)',
+          color: '#060606',
+          padding: '0.55rem 1.5rem',
+          textAlign: 'center',
+          position: 'relative',
+          zIndex: 50,
+        }}>
+          <span className="font-mono" style={{ fontSize: '11px', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 500 }}>
+            ● Lançamento oficial · 19 de Maio · 21:15 BRT&nbsp;&nbsp;|&nbsp;&nbsp;Lista aberta · Vagas limitadas
+          </span>
+        </div>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       1. STICKY NAV
+    ───────────────────────────────────────────── */
+    function Nav({ scrollY }) {
+      const scrolled = scrollY > 24;
+      return (
+        <nav style={{
+          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 40,
+          padding: '0 1.5rem',
+          transition: 'background 0.3s, backdrop-filter 0.3s, border-color 0.3s',
+          background: scrolled ? 'rgba(6,6,6,0.85)' : 'transparent',
+          backdropFilter: scrolled ? 'blur(16px)' : 'none',
+          borderBottom: scrolled ? '1px solid var(--line)' : '1px solid transparent',
+        }}>
+          <div style={{ maxWidth: 1240, margin: '0 auto', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            {/* Logo lockup */}
+            <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
+              <XioMark size={32} />
+              <span className="eyebrow" style={{ color: 'var(--dim)', fontSize: '10px' }}>
+                XIO / Academy
+              </span>
+            </a>
+
+            {/* Links (hidden mobile) */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2.25rem' }} className="nav-links">
+              {['Fundadores','Visão','Planos','FAQ'].map(l => (
+                <a key={l} href={`#${l.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')}`}
+                   style={{ textDecoration: 'none', color: 'var(--dim)', fontSize: '13px', fontWeight: 400,
+                   transition: 'color 0.2s' }}
+                   onMouseEnter={e => e.currentTarget.style.color='var(--ink)'}
+                   onMouseLeave={e => e.currentTarget.style.color='var(--dim)'}>
+                  {l}
+                </a>
+              ))}
+            </div>
+
+            <a href="#receba" className="btn-outline" style={{ fontSize: '11px', padding: '0.6rem 1.25rem' }}>
+              Receber acesso
+            </a>
+          </div>
+
+          <style>{`
+            @media (max-width: 640px) {
+              .nav-links { display: none !important; }
+            }
+          `}</style>
+        </nav>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       XIO MARK SVG (geometric)
+    ───────────────────────────────────────────── */
+    function XioMark({ size = 40, opacity = 1 }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 40 40" fill="none" style={{ opacity }}>
+          {/* X */}
+          <line x1="2" y1="4" x2="14" y2="22" stroke="var(--ink)" strokeWidth="1.2" strokeLinecap="round"/>
+          <line x1="14" y1="4" x2="2" y2="22" stroke="var(--ink)" strokeWidth="1.2" strokeLinecap="round"/>
+          {/* I */}
+          <line x1="18" y1="4" x2="18" y2="22" stroke="var(--ink)" strokeWidth="1.2" strokeLinecap="round"/>
+          {/* O */}
+          <ellipse cx="30" cy="13" rx="7" ry="9" stroke="var(--ink)" strokeWidth="1.2" fill="none"/>
+          {/* dot inside O */}
+          <circle cx="30" cy="13" r="1.2" fill="var(--accent)"/>
+          {/* ACADEMY underline */}
+          <text x="1" y="34" fontFamily="'JetBrains Mono', monospace" fontSize="5.5" letterSpacing="0.15em"
+                fill="var(--accent)" fontWeight="400">ACADEMY</text>
+        </svg>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       2. HERO
+    ───────────────────────────────────────────── */
+    function Hero() {
+      const { dias, hrs, min, seg, launched } = useCountdown(LAUNCH_DATE);
+      return (
+        <section id="hero" style={{
+          position: 'relative', overflow: 'hidden',
+          minHeight: '100vh', display: 'flex', flexDirection: 'column',
+          justifyContent: 'center', paddingTop: '8rem', paddingBottom: '0',
+        }}>
+          {/* Conic background */}
+          <div className="conic-bg" />
+
+          {/* Giant XIO watermark */}
+          <div style={{
+            position: 'absolute', left: '50%', top: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontFamily: "'Cormorant Garamond', serif",
+            fontWeight: 300, fontSize: 'clamp(200px, 40vw, 480px)',
+            color: 'var(--ink)', opacity: 0.035,
+            letterSpacing: '-0.04em', lineHeight: 1,
+            userSelect: 'none', pointerEvents: 'none', zIndex: 0,
+            whiteSpace: 'nowrap',
+          }}>XIO</div>
+
+          <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 1.5rem', position: 'relative', zIndex: 2, width: '100%' }}>
+            <p className="eyebrow" style={{ marginBottom: '2rem', color: 'var(--muted)' }}>
+              Pré-lançamento · Parauapebas, PA
+            </p>
+
+            <h1 className="display-xl" style={{ marginBottom: '2.25rem', maxWidth: '18ch' }}>
+              A nova geração da{' '}
+              <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>tecnologia</em>{' '}
+              começa no Pará.
+            </h1>
+
+            <p style={{
+              fontSize: 'clamp(1rem, 1.8vw, 1.175rem)', fontWeight: 300,
+              color: 'var(--dim)', maxWidth: '56ch', marginBottom: '3rem', lineHeight: 1.7,
+            }}>
+              Uma academia de IA pensada para quem cresceu olhando para o mundo
+              de Parauapebas e decidiu chegar antes dele. Lançamento oficial em
+              19 de maio, às 21:15.
+            </p>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1.25rem', marginBottom: '5rem' }}>
+              <a href="#receba" className="btn-primary">
+                Receber Ebook + Vídeo grátis
+              </a>
+              <a href="#planos" style={{
+                color: 'var(--dim)', textDecoration: 'none', fontSize: '13px', fontWeight: 400,
+                letterSpacing: '0.04em', borderBottom: '1px solid var(--line)',
+                paddingBottom: '1px', transition: 'color 0.2s, border-color 0.2s',
+              }}
+              onMouseEnter={e => { e.target.style.color='var(--ink)'; e.target.style.borderColor='var(--ink)'; }}
+              onMouseLeave={e => { e.target.style.color='var(--dim)'; e.target.style.borderColor='var(--line)'; }}>
+                Ver os planos →
+              </a>
+            </div>
+
+            {/* Countdown */}
+            <div style={{ borderTop: '1px solid var(--line)', paddingTop: '2.5rem', marginBottom: '4rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem', flexWrap: 'wrap', gap: '0.5rem', maxWidth: 560, margin: '0 auto 1.75rem' }}>
+                <span className="eyebrow">Contagem regressiva</span>
+                <span className="eyebrow">19 / 05 · 21:15 BRT</span>
+              </div>
+              {launched ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
+                  <span className="font-display" style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 300, color: '#22c55e' }}>
+                    Lançamento ao vivo agora
+                  </span>
+                </div>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1px', background: 'var(--line)', maxWidth: 560, border: '1px solid var(--line)', margin: '0 auto' }}>
+                  {[['dias', dias], ['hrs', hrs], ['min', min], ['seg', seg]].map(([label, val]) => (
+                    <div key={label} style={{ background: 'var(--bg)', padding: '1.5rem 1rem', textAlign: 'center' }}>
+                      <div className="font-display" style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 300, lineHeight: 1, color: 'var(--ink)' }}>
+                        {p2(val)}
+                      </div>
+                      <div className="eyebrow" style={{ marginTop: '0.5rem', fontSize: '10px' }}>{label}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Marquee strip */}
+          <div style={{ borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', overflow: 'hidden', position: 'relative', zIndex: 2 }}>
+            <div className="marquee-track" style={{ padding: '0.875rem 0' }}>
+              {[1,2].map(i => (
+                <span key={i} className="eyebrow" style={{ color: 'var(--dim)', display: 'flex', gap: '0', alignItems: 'center', paddingRight: 0 }}>
+                  {['IA aplicada','Comunidade Pará','Mentorias diretas','Projetos reais','Ebooks completos','Lançamento 19/05 · 21:15'].map((item, j) => (
+                    <span key={j} style={{ display: 'inline-flex', alignItems: 'center', padding: '0 2.5rem' }}>
+                      {item}
+                      <span style={{ marginLeft: '2.5rem', opacity: 0.4, fontSize: '9px' }}>◇</span>
+                    </span>
+                  ))}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       PORTRAIT PLACEHOLDER
+    ───────────────────────────────────────────── */
+    function PortraitPlaceholder({ name }) {
+      return (
+        <div className="diagonal-stripe" style={{
+          aspectRatio: '4/5', border: '1px solid var(--line)',
+          position: 'relative', overflow: 'hidden', background: 'var(--surface)',
+        }}>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 56, height: 56, borderRadius: '50%', border: '1px solid var(--line-md)', marginBottom: '0.75rem' }} />
+            <span className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px' }}>Retrato {name}</span>
+          </div>
+          {/* corner markers */}
+          {[
+            { top: 8, left: 8,     borderTop: '1px solid var(--line-md)', borderLeft: '1px solid var(--line-md)' },
+            { top: 8, right: 8,    borderTop: '1px solid var(--line-md)', borderRight: '1px solid var(--line-md)' },
+            { bottom: 8, left: 8,  borderBottom: '1px solid var(--line-md)', borderLeft: '1px solid var(--line-md)' },
+            { bottom: 8, right: 8, borderBottom: '1px solid var(--line-md)', borderRight: '1px solid var(--line-md)' },
+          ].map((s, i) => (
+            <div key={i} style={{ position: 'absolute', width: 12, height: 12, ...s }} />
+          ))}
+        </div>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       3. FUNDADORES
+    ───────────────────────────────────────────── */
+    const founders = [
+      {
+        name: 'Iuri Moreira', age: 21, role: 'Co-fundador', loc: 'Parauapebas · PA',
+        bio: 'Estudante de Odontologia em Parauapebas. Estuda IA por conta própria há dois anos e acredita que a próxima geração de empreendedores do Pará vai nascer da intersecção entre ciência, tecnologia e ambição local.',
+      },
+      {
+        name: 'Octávio Lobo', age: 21, role: 'Co-fundador', loc: 'Vancouver · CA',
+        bio: 'Web Designer em Vancouver. Cresceu em Parauapebas, atravessou um continente e voltou com a convicção de que talento daqui não precisa sair daqui — precisa apenas de método, ferramenta e visão.',
+      },
+    ];
+
+    function Fundadores() {
+      return (
+        <section id="fundadores" className="section-sep section-pad">
+          <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 1.5rem' }}>
+            {/* Section header */}
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.25rem', marginBottom: '4rem' }}>
+              <span className="eyebrow" style={{ color: 'var(--accent)' }}>01</span>
+              <span className="eyebrow">Os fundadores</span>
+            </div>
+
+            <p className="display-md" style={{ maxWidth: '28ch', marginBottom: '4rem' }}>
+              Dois jovens paraenses com a mesma <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>inquietação.</em>
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1px', background: 'var(--line)' }}>
+              {founders.map(f => (
+                <div key={f.name} style={{ background: 'var(--bg)', padding: '2.5rem 2rem' }}>
+                  <PortraitPlaceholder name={f.name.split(' ')[0]} />
+                  <div style={{ marginTop: '2rem' }}>
+                    <h3 className="font-display" style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 300, marginBottom: '0.25rem' }}>
+                      {f.name}
+                    </h3>
+                    <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                      <span className="eyebrow" style={{ color: 'var(--accent)' }}>{f.age} anos</span>
+                      <span className="eyebrow" style={{ color: 'var(--muted)' }}>{f.role}</span>
+                      <span className="eyebrow" style={{ color: 'var(--muted)' }}>{f.loc}</span>
+                    </div>
+                    <p style={{ color: 'var(--dim)', fontSize: '14px', lineHeight: 1.75 }}>{f.bio}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       4. VÍDEO
+    ───────────────────────────────────────────── */
+    function VideoSection() {
+      const [playing, setPlaying] = useState(false);
+      const [currentTime, setCurrentTime] = useState(0);
+      const [duration] = useState(12);
+      const videoRef = useRef(null);
+      const timerRef = useRef(null);
+
+      const toggle = useCallback(() => {
+        setPlaying(p => !p);
+        /* When a real video file is provided, uncomment:
+        if (videoRef.current) {
+          playing ? videoRef.current.pause() : videoRef.current.play();
+        } */
+      }, []);
+
+      useEffect(() => {
+        if (playing) {
+          timerRef.current = setInterval(() => {
+            setCurrentTime(prev => {
+              if (prev >= 12) {
+                setPlaying(false);
+                clearInterval(timerRef.current);
+                setTimeout(() => setCurrentTime(0), 800);
+                return 12;
+              }
+              return prev + 0.1;
+            });
+          }, 100);
+        } else {
+          clearInterval(timerRef.current);
+        }
+        return () => clearInterval(timerRef.current);
+      }, [playing]);
+
+      const progress = (currentTime / duration) * 100;
+      const fmt = s => `${String(Math.floor(s / 60)).padStart(2,'0')}:${String(Math.floor(s % 60)).padStart(2,'0')}`;
+
+      return (
+        <section id="visao-video" className="section-sep section-pad">
+          <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.25rem', marginBottom: '3rem' }}>
+              <span className="eyebrow" style={{ color: 'var(--accent)' }}>02</span>
+              <span className="eyebrow">Vídeo de apresentação</span>
+            </div>
+
+            <h2 className="display-md" style={{ maxWidth: '22ch', marginBottom: '3rem' }}>
+              Doze segundos para entender <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>o porquê.</em>
+            </h2>
+
+            <div style={{ maxWidth: 800 }}>
+              {/* Player frame */}
+              <div style={{
+                aspectRatio: '16/9', border: '1px solid var(--line-md)',
+                position: 'relative', overflow: 'hidden', background: 'var(--surface)',
+                cursor: 'pointer',
+              }} onClick={toggle}>
+                {/* Placeholder bg */}
+                <div className="diagonal-stripe" style={{ position: 'absolute', inset: 0 }} />
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: 'radial-gradient(ellipse at 50% 50%, oklch(0.80 0.065 80 / 0.12) 0%, transparent 65%)',
+                }} />
+
+                {/* Video element (hidden until real file) */}
+                <video ref={videoRef} style={{ display: 'none' }} playsInline>
+                  {/* <source src="assets/xio-presentation.mp4" type="video/mp4" /> */}
+                </video>
+
+                {/* Top meta */}
+                <div style={{ position: 'absolute', top: '1rem', left: '1rem', right: '1rem', display: 'flex', justifyContent: 'space-between', zIndex: 2 }}>
+                  <span className="eyebrow" style={{ fontSize: '10px' }}>XIO / 2026 · Apresentação</span>
+                  <span className="eyebrow" style={{ fontSize: '10px', color: 'var(--accent)' }}>{12 - Math.floor(currentTime)}s restantes</span>
+                </div>
+
+                {/* Center XIO mark */}
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>
+                  {!playing && (
+                    <div style={{
+                      fontFamily: "'Cormorant Garamond', serif",
+                      fontWeight: 300, fontSize: 'clamp(3rem, 8vw, 7rem)',
+                      color: 'var(--ink)', opacity: 0.06,
+                      letterSpacing: '-0.04em',
+                    }}>XIO</div>
+                  )}
+                </div>
+
+                {/* Play button */}
+                <div style={{
+                  position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3,
+                }}>
+                  <button onClick={e => { e.stopPropagation(); toggle(); }} style={{
+                    width: 96, height: 96, borderRadius: '50%',
+                    background: 'rgba(6,6,6,0.7)', border: '1px solid var(--line-md)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', transition: 'border-color 0.2s, transform 0.2s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.transform = 'scale(1.04)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--line-md)'; e.currentTarget.style.transform = 'scale(1)'; }}>
+                    {playing ? (
+                      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <rect x="7" y="6" width="4" height="16" fill="var(--ink)" rx="1"/>
+                        <rect x="17" y="6" width="4" height="16" fill="var(--ink)" rx="1"/>
+                      </svg>
+                    ) : (
+                      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <path d="M10 7l14 7-14 7V7z" fill="var(--ink)" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+
+                {/* Progress bar */}
+                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 4 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.4rem 1rem', alignItems: 'center' }}>
+                    <span className="eyebrow" style={{ fontSize: '9px' }}>{fmt(currentTime)}</span>
+                    <span className="eyebrow" style={{ fontSize: '9px' }}>{fmt(duration)}</span>
+                  </div>
+                  <div style={{ height: 2, background: 'var(--line)' }}>
+                    <div style={{ height: '100%', background: 'var(--accent)', width: `${progress}%`, transition: 'width 0.1s linear' }} />
+                  </div>
+                </div>
+              </div>
+
+              <p className="eyebrow" style={{ marginTop: '1rem', color: 'var(--muted)', fontSize: '10px' }}>
+                Recorte de 12 segundos · sem áudio para autoplay · com som ao reproduzir
+              </p>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       5. A VISÃO
+    ───────────────────────────────────────────── */
+    const principles = [
+      {
+        num: 'I', title: 'Tecnologia como acesso',
+        body: 'IA não é privilégio de quem mora em São Paulo, Toronto ou Berlim. É linguagem. E linguagem se ensina.',
+      },
+      {
+        num: 'II', title: 'Origem como vantagem',
+        body: 'Vir do Pará não é um detalhe a ser superado. É um ponto de partida com perspectiva que ninguém mais tem.',
+      },
+      {
+        num: 'III', title: 'Velocidade com método',
+        body: 'Não vendemos atalhos — entregamos roteiros. Você aprende rápido porque o caminho está mapeado.',
+      },
+];
+
+    function Visao() {
+      return (
+        <section id="visao" className="section-sep section-pad">
+          <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.25rem', marginBottom: '3rem' }}>
+              <span className="eyebrow" style={{ color: 'var(--accent)' }}>03</span>
+              <span className="eyebrow">A visão</span>
+            </div>
+
+            <h2 className="display-md" style={{ maxWidth: '26ch', marginBottom: '4rem' }}>
+              A nova geração da tecnologia não vai{' '}
+              <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>pedir licença.</em>
+            </h2>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1px', background: 'var(--line)' }}>
+              {principles.map(p => (
+                <div key={p.num} style={{ background: 'var(--bg)', padding: '2.5rem 2rem' }}>
+                  <div className="font-display" style={{
+                    fontSize: 'clamp(3rem, 5vw, 5rem)', fontWeight: 300,
+                    color: 'var(--accent)', lineHeight: 1, marginBottom: '1.5rem', opacity: 0.7,
+                  }}>{p.num}</div>
+                  <h3 className="font-display" style={{ fontSize: 'clamp(1.25rem, 2.5vw, 1.625rem)', fontWeight: 300, marginBottom: '1rem' }}>
+                    {p.title}
+                  </h3>
+                  <p style={{ color: 'var(--dim)', fontSize: '14px', lineHeight: 1.75 }}>{p.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       6. LEAD CAPTURE
+    ───────────────────────────────────────────── */
+    function LeadCapture() {
+      const [nome, setNome] = useState('');
+      const [email, setEmail] = useState('');
+      const [loading, setLoading] = useState(false);
+      const [success, setSuccess] = useState(false);
+      const [error, setError] = useState('');
+
+      const validateEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+      const submit = async (ev) => {
+        ev.preventDefault();
+        if (!nome.trim()) { setError('Informe seu nome.'); return; }
+        if (!validateEmail(email)) { setError('E-mail inválido.'); return; }
+        setError('');
+        setLoading(true);
+        await new Promise(r => setTimeout(r, 900));
+        setLoading(false);
+        setSuccess(true);
+      };
+
+      return (
+        <section id="receba" className="section-sep section-pad">
+          <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.25rem', marginBottom: '4rem' }}>
+              <span className="eyebrow" style={{ color: 'var(--accent)' }}>04</span>
+              <span className="eyebrow">Receba grátis</span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '4rem', alignItems: 'start' }}>
+              {/* Left — visual */}
+              <div style={{ position: 'relative' }}>
+                {/* Giant GRÁTIS */}
+                <div style={{
+                  position: 'absolute', top: '50%', left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontWeight: 300, fontSize: 'clamp(3rem, 8vw, 6rem)',
+                  color: 'var(--ink)', opacity: 0.028,
+                  letterSpacing: '-0.02em', userSelect: 'none', pointerEvents: 'none',
+                  whiteSpace: 'nowrap', textTransform: 'uppercase',
+                }}>grátis</div>
+
+                {/* Stacked mocks */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+                  {/* Ebook mock */}
+                  <div className="diagonal-stripe" style={{
+                    border: '1px solid var(--line-md)', background: 'var(--surface)',
+                    padding: '2rem',
+                  }}>
+                    <span className="eyebrow" style={{ color: 'var(--accent)', fontSize: '10px', marginBottom: '1rem', display: 'block' }}>
+                      Pacote XIO 001 · Ebook
+                    </span>
+                    <p className="font-display" style={{ fontSize: 'clamp(1rem, 2.5vw, 1.4rem)', fontWeight: 300, lineHeight: 1.3, marginBottom: '1rem' }}>
+                      O guia honesto para começar em IA a partir do Pará.
+                    </p>
+                    <span className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px' }}>48 páginas</span>
+                  </div>
+
+                  {/* Video mock */}
+                  <div style={{
+                    border: '1px solid var(--line)', background: 'var(--surface)',
+                    padding: '1.5rem 2rem', display: 'flex', alignItems: 'center', gap: '1.25rem',
+                  }}>
+                    <div style={{
+                      width: 40, height: 40, borderRadius: '50%',
+                      border: '1px solid var(--line-md)', flexShrink: 0,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M4 3l8 4-8 4V3z" fill="var(--accent)" />
+                      </svg>
+                    </div>
+                    <div>
+                      <span className="eyebrow" style={{ color: 'var(--accent)', fontSize: '10px', display: 'block', marginBottom: '0.2rem' }}>
+                        Pacote XIO 001 · Vídeo
+                      </span>
+                      <p style={{ fontSize: '13px', color: 'var(--dim)', fontWeight: 300 }}>
+                        Aula introdutória · 22 min · com Iuri e Octávio
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right — form */}
+              <div>
+                <h2 className="display-md" style={{ marginBottom: '2rem', maxWidth: '20ch' }}>
+                  Comece agora,{' '}
+                  <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>sem custo.</em>
+                </h2>
+
+                {success ? (
+                  <div style={{
+                    border: '1px solid var(--accent)', padding: '2.5rem',
+                    background: 'var(--surface)',
+                  }}>
+                    <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: '1rem' }}>Confirmado</div>
+                    <p className="font-display" style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: 300, marginBottom: '1rem' }}>
+                      Bem-vinda(o) ao começo.
+                    </p>
+                    <p style={{ color: 'var(--dim)', fontSize: '14px', lineHeight: 1.75 }}>
+                      Enviamos o ebook e o link do vídeo para{' '}
+                      <span style={{ color: 'var(--ink)', fontWeight: 400 }}>{email}</span>.
+                      Fique de olho — pode cair no spam na primeira vez.
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={submit} noValidate>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1px', background: 'var(--line)', marginBottom: '1px' }}>
+                      <input
+                        className="xio-input"
+                        type="text"
+                        placeholder="Seu nome"
+                        value={nome}
+                        onChange={e => setNome(e.target.value)}
+                      />
+                      <input
+                        className="xio-input"
+                        type="email"
+                        placeholder="Seu e-mail"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                      />
+                    </div>
+                    {error && (
+                      <p style={{ color: 'var(--accent)', fontSize: '12px', marginBottom: '0.75rem', fontFamily: "'JetBrains Mono', monospace" }}>
+                        {error}
+                      </p>
+                    )}
+                    <button type="submit" className="btn-primary" style={{ width: '100%', marginBottom: '1rem', opacity: loading ? 0.7 : 1, transition: 'opacity 0.2s' }} disabled={loading}>
+                      {loading ? 'Enviando...' : 'Quero receber grátis'}
+                    </button>
+                    <p className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px', textAlign: 'center' }}>
+                      Sem spam. Cancele com um clique.
+                    </p>
+                  </form>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       7. OS PLANOS
+    ───────────────────────────────────────────── */
+    function Planos() {
+      const plans = [
+        {
+          name: 'Start', price: '149', tag: 'Para começar com clareza',
+          featured: false,
+          blurb: 'Cinco ebooks essenciais e suporte direto com os fundadores. O suficiente para sair do zero com método.',
+          bullets: [
+            '5 ebooks da biblioteca XIO',
+            'Suporte direto com os fundadores',
+            'Acesso por 12 meses',
+            'Atualizações de conteúdo incluídas',
+          ],
+        },
+        {
+          name: 'Experience', price: '399', tag: 'A formação completa',
+          featured: true, badge: 'Mais escolhido',
+          blurb: 'Para quem decidiu — não está testando. Aulas em vídeo, ebooks completos e a comunidade XIO.',
+          bullets: [
+            'Mais de 5 aulas em vídeo',
+            'Ebooks completos da XIO',
+            'Suporte direto com os fundadores',
+            'Troca de ideias e projetos em grupo',
+            'Acesso à futura comunidade XIO',
+            'Acesso vitalício',
+          ],
+        },
+      ];
+
+      return (
+        <section id="planos" className="section-sep section-pad">
+          <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.25rem', marginBottom: '3rem' }}>
+              <span className="eyebrow" style={{ color: 'var(--accent)' }}>05</span>
+              <span className="eyebrow">Os planos</span>
+            </div>
+
+            <h2 className="display-md" style={{ marginBottom: '4rem', maxWidth: '24ch' }}>
+              Dois caminhos.{' '}
+              <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>Mesma direção.</em>
+            </h2>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1px', background: 'var(--line)', marginBottom: '2rem' }}>
+              {plans.map(plan => (
+                <div key={plan.name} style={{
+                  background: 'var(--bg)', padding: '2.5rem 2rem',
+                  borderTop: plan.featured ? '1px solid var(--accent)' : 'none',
+                  position: 'relative',
+                }}>
+                  {plan.featured && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                      <span className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px' }}>{plan.badge}</span>
+                      <span className="eyebrow" style={{ color: 'var(--accent)', fontSize: '10px' }}>Recomendado</span>
+                    </div>
+                  )}
+                  {!plan.featured && <div style={{ height: '2.25rem', marginBottom: '2rem' }} />}
+
+                  <span className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px', display: 'block', marginBottom: '1rem' }}>
+                    {plan.tag}
+                  </span>
+
+                  <div className="font-display" style={{
+                    fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: 300, lineHeight: 1,
+                    color: plan.featured ? 'var(--accent)' : 'var(--ink)',
+                    marginBottom: '0.5rem',
+                  }}>
+                    <span style={{ fontSize: '60%', fontWeight: 300, verticalAlign: 'top', marginTop: '0.3em', display: 'inline-block' }}>R$</span>
+                    {plan.price}
+                  </div>
+                  <span className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px', display: 'block', marginBottom: '1.75rem' }}>
+                    pagamento único
+                  </span>
+
+                  <h3 className="font-display" style={{ fontSize: 'clamp(1.4rem, 3vw, 1.875rem)', fontWeight: 300, marginBottom: '1rem' }}>
+                    {plan.name}
+                  </h3>
+                  <p style={{ color: 'var(--dim)', fontSize: '14px', lineHeight: 1.75, marginBottom: '2rem' }}>
+                    {plan.blurb}
+                  </p>
+
+                  <ul style={{ listStyle: 'none', marginBottom: '2.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {plan.bullets.map(b => (
+                      <li key={b} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', fontSize: '14px', color: 'var(--dim)' }}>
+                        <span style={{ color: plan.featured ? 'var(--accent)' : 'var(--ink)', marginTop: '2px', fontSize: '10px', flexShrink: 0 }}>●</span>
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {plan.featured ? (
+                    <a href="#receba" className="btn-outline-accent" style={{ width: '100%', justifyContent: 'center' }}>
+                      Reservar vaga
+                    </a>
+                  ) : (
+                    <a href="#receba" className="btn-outline" style={{ width: '100%', justifyContent: 'center' }}>
+                      Reservar vaga
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <p className="eyebrow" style={{ color: 'var(--muted)', textAlign: 'center', fontSize: '10px' }}>
+              Pagamento único · Garantia incondicional de 7 dias · Acesso liberado na hora
+            </p>
+          </div>
+        </section>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       8. O QUE VOCÊ RECEBE
+    ───────────────────────────────────────────── */
+    const features = [
+      { idx: '01', title: 'Conteúdo curado', body: 'Ebooks completos sobre IA aplicada — escritos para quem começa do zero e quer chegar longe sem enrolação.' },
+      { idx: '02', title: 'Aulas práticas', body: 'Mais de 5 vídeos com projetos reais. Você vê sendo feito, entende o raciocínio, e replica por conta própria.' },
+      { idx: '03', title: 'Mentoria humana', body: 'Suporte direto com os fundadores. Não é um chatbot. São Iuri e Octávio respondendo de verdade.' },
+      { idx: '04', title: 'Comunidade', body: 'Acesso à futura comunidade XIO — onde alunos trocam projetos, ideias e constroem junto.' },
+      { idx: '05', title: 'Atualizações', body: 'Material vivo, sempre atualizado. IA muda rápido. O conteúdo acompanha.' },
+      { idx: '06', title: 'Origem', body: 'Pensado a partir de Parauapebas — com a linguagem, referências e contexto de quem vem daqui.' },
+      { idx: '07', title: 'Networking', body: 'Conexões reais com quem está construindo IA no Brasil e fora. Dentro da XIO você encontra pessoas que pensam grande, trabalham de verdade e estão dispostas a construir junto.' },
+    ];
+
+    function OQueVoceRecebe() {
+      return (
+        <section id="o-que-voce-recebe" className="section-sep section-pad">
+          <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.25rem', marginBottom: '3rem' }}>
+              <span className="eyebrow" style={{ color: 'var(--accent)' }}>06</span>
+              <span className="eyebrow">O que você recebe</span>
+            </div>
+
+            <h2 className="display-md" style={{ marginBottom: '4rem', maxWidth: '28ch' }}>
+              Tudo que precisamos ter quando{' '}
+              <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>começamos do zero.</em>
+            </h2>
+
+            <div className="features-grid" style={{ display: 'grid', gap: '1px', background: 'var(--line)' }}>
+              {features.map(f => (
+                <div key={f.idx} className={f.idx === '07' ? 'feature-last' : ''} style={{ background: 'var(--bg)', padding: '2rem', position: 'relative' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+                    <span className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px' }}>Feature</span>
+                    <span className="eyebrow" style={{ color: 'var(--accent)', fontSize: '10px' }}>{f.idx}</span>
+                  </div>
+                  <h3 className="font-display" style={{ fontSize: 'clamp(1.125rem, 2.5vw, 1.5rem)', fontWeight: 300, marginBottom: '0.875rem' }}>
+                    {f.title}
+                  </h3>
+                  <p style={{ color: 'var(--dim)', fontSize: '13.5px', lineHeight: 1.75 }}>{f.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <style>{`
+            .features-grid { grid-template-columns: 1fr; }
+            @media (min-width: 640px) {
+              .features-grid { grid-template-columns: repeat(2, 1fr); }
+            }
+            @media (min-width: 1024px) {
+              .features-grid { grid-template-columns: repeat(4, 1fr); }
+              .feature-last { grid-column: span 2; }
+            }
+          `}</style>
+        </section>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       9. GARANTIA
+    ───────────────────────────────────────────── */
+    function Garantia() {
+      return (
+        <section id="garantia" className="section-sep section-pad">
+          <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.25rem', marginBottom: '4rem' }}>
+              <span className="eyebrow" style={{ color: 'var(--accent)' }}>07</span>
+              <span className="eyebrow">Garantia</span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+              {/* Stamp */}
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <svg width="240" height="240" viewBox="0 0 240 240">
+                  {/* Outer circle */}
+                  <circle cx="120" cy="120" r="110" fill="none" stroke="var(--accent)" strokeWidth="0.75" opacity="0.4"/>
+                  <circle cx="120" cy="120" r="100" fill="none" stroke="var(--accent)" strokeWidth="0.5" opacity="0.25"/>
+
+                  {/* Text on arc */}
+                  <defs>
+                    <path id="textArc" d="M 120,120 m -92,0 a 92,92 0 1,1 184,0 a 92,92 0 1,1 -184,0" />
+                  </defs>
+                  <g className="stamp-ring">
+                    <text fill="var(--accent)" fontFamily="'JetBrains Mono', monospace" fontSize="9" letterSpacing="4">
+                      <textPath href="#textArc" startOffset="0%">
+                        GARANTIA · XIO ACADEMY · SETE DIAS · GARANTIA · XIO ACADEMY · SETE DIAS ·
+                      </textPath>
+                    </text>
+                  </g>
+
+                  {/* Center */}
+                  <text x="120" y="108" textAnchor="middle" fontFamily="'Cormorant Garamond', serif" fontSize="72" fontWeight="300" fill="var(--accent)">7</text>
+                  <text x="120" y="140" textAnchor="middle" fontFamily="'JetBrains Mono', monospace" fontSize="10" letterSpacing="6" fill="var(--accent)" opacity="0.7">DIAS</text>
+                </svg>
+              </div>
+
+              {/* Copy */}
+              <div>
+                <h2 className="display-md" style={{ marginBottom: '1.75rem', maxWidth: '22ch' }}>
+                  Sete dias para experimentar.{' '}
+                  <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>Zero perguntas se quiser sair.</em>
+                </h2>
+                <p style={{ color: 'var(--dim)', fontSize: '15px', lineHeight: 1.8, marginBottom: '2rem', maxWidth: '48ch' }}>
+                  Entre na XIO, leia os ebooks, assista as aulas, pergunte o que quiser diretamente
+                  para nós. Se em sete dias você sentir que não é pra você, devolvemos cada centavo.
+                  Sem formulário, sem ligação, sem desculpas.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                  {['Reembolso integral', 'Sem burocracia', 'Sem perguntas'].map(chip => (
+                    <span key={chip} className="eyebrow" style={{
+                      fontSize: '10px', color: 'var(--accent)',
+                      border: '1px solid var(--accent)', padding: '0.4rem 0.875rem',
+                      opacity: 0.8,
+                    }}>· {chip}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       10. FAQ
+    ───────────────────────────────────────────── */
+    const faqs = [
+      {
+        q: 'Eu nunca estudei programação ou tecnologia. Consigo acompanhar?',
+        a: 'Sim. A XIO não pressupõe experiência anterior. Começamos do ponto zero e avançamos com ritmo — sem saltar etapas, sem jargão desnecessário. Se você sabe usar um celular, já tem o suficiente para começar.',
+      },
+      {
+        q: 'Preciso morar em Parauapebas para participar?',
+        a: 'Não. O acesso é 100% digital. Você pode estar em Parauapebas, em Belém, em São Paulo ou no Canadá. A XIO foi fundada no Pará, mas o conteúdo é feito para qualquer lugar.',
+      },
+      {
+        q: 'Quando a XIO Academy abre oficialmente?',
+        a: 'O lançamento oficial acontece em 19 de maio de 2026, às 21:15 (horário de Brasília). Quem estiver na lista de espera recebe acesso antes.',
+      },
+      {
+        q: 'Qual a diferença real entre Start e Experience?',
+        a: 'O plano Start entrega os fundamentos: cinco ebooks e suporte direto. É o suficiente para quem quer começar com clareza. O Experience vai além — inclui as aulas em vídeo, acesso à comunidade e conteúdo expandido. Escolha pelo quanto você quer aprofundar.',
+      },
+      {
+        q: 'E se eu pagar e não gostar?',
+        a: 'Você tem sete dias para pedir reembolso integral. Sem formulário, sem ligação, sem justificativa. Manda uma mensagem e devolvemos cada centavo.',
+      },
+      {
+        q: 'Quem está por trás da XIO?',
+        a: 'Iuri Moreira, estudante de Odontologia em Parauapebas que estuda IA por conta própria há três anos, e Octávio Lobo, web designer no Canadá que cresceu no Pará. Dois fundadores reais, com nome e rosto — não uma empresa anônima.',
+      },
+    ];
+
+    function FAQ() {
+      const [open, setOpen] = useState(null);
+      return (
+        <section id="faq" className="section-sep section-pad">
+          <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.25rem', marginBottom: '4rem' }}>
+              <span className="eyebrow" style={{ color: 'var(--accent)' }}>08</span>
+              <span className="eyebrow">FAQ</span>
+            </div>
+
+            <div className="faq-layout">
+              {/* Left: heading */}
+              <div className="faq-heading-col">
+                <h2 className="display-md" style={{ position: 'sticky', top: '5.5rem', maxWidth: '18ch' }}>
+                  Antes que você{' '}
+                  <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>pergunte.</em>
+                </h2>
+              </div>
+
+              {/* Right: accordion */}
+              <div>
+                {faqs.map((faq, i) => (
+                  <div key={i} style={{ borderBottom: '1px solid var(--line)' }}>
+                    <button
+                      onClick={() => setOpen(open === i ? null : i)}
+                      style={{
+                        width: '100%', background: 'none', border: 'none', cursor: 'pointer',
+                        display: 'grid', gridTemplateColumns: '2.5rem 1fr auto',
+                        alignItems: 'center', gap: '1.5rem',
+                        padding: '1.75rem 0', textAlign: 'left',
+                      }}
+                    >
+                      <span className="eyebrow" style={{ color: 'var(--accent)', fontSize: '10px' }}>{String(i+1).padStart(2,'0')}</span>
+                      <span className="font-display" style={{ fontSize: 'clamp(1.05rem, 2.2vw, 1.375rem)', fontWeight: 300, color: 'var(--ink)' }}>
+                        {faq.q}
+                      </span>
+                      <span style={{
+                        fontFamily: "'JetBrains Mono', monospace", fontSize: '18px',
+                        color: 'var(--accent)', transition: 'transform 0.35s',
+                        transform: open === i ? 'rotate(45deg)' : 'rotate(0deg)',
+                        display: 'inline-block', lineHeight: 1,
+                      }}>＋</span>
+                    </button>
+                    <div className={`faq-body${open === i ? ' open' : ''}`}>
+                      <p style={{ color: 'var(--dim)', fontSize: '14.5px', lineHeight: 1.8, paddingBottom: '1.75rem', paddingLeft: '4rem', maxWidth: '58ch' }}>
+                        {faq.a}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <style>{`
+            .faq-layout {
+              display: grid;
+              grid-template-columns: 1fr;
+              gap: 3rem;
+            }
+            @media (min-width: 768px) {
+              .faq-layout {
+                grid-template-columns: 1fr 2fr;
+                gap: 5rem;
+                align-items: start;
+              }
+            }
+            .faq-heading-col {
+              display: none;
+            }
+            @media (min-width: 768px) {
+              .faq-heading-col {
+                display: block;
+              }
+            }
+          `}</style>
+        </section>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       11. FINAL CTA + FOOTER
+    ───────────────────────────────────────────── */
+    function FinalCTA() {
+      return (
+        <section className="section-sep section-pad" style={{ textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+          <div style={{
+            position: 'absolute', bottom: '-4rem', left: '50%', transform: 'translateX(-50%)',
+            fontFamily: "'Cormorant Garamond', serif", fontWeight: 300,
+            fontSize: '28vw', color: 'var(--ink)', opacity: 0.04,
+            letterSpacing: '-0.04em', lineHeight: 1, userSelect: 'none', pointerEvents: 'none',
+            whiteSpace: 'nowrap',
+          }}>XIO</div>
+
+          <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 1.5rem', position: 'relative', zIndex: 1 }}>
+            <p className="eyebrow" style={{ color: 'var(--muted)', marginBottom: '2rem' }}>
+              XIO Academy · Parauapebas, PA
+            </p>
+            <h2 style={{
+              fontFamily: "'Cormorant Garamond', serif", fontWeight: 300,
+              fontSize: 'clamp(2.5rem, 7vw, 7rem)',
+              lineHeight: 0.95, letterSpacing: '-0.02em',
+              marginBottom: '3rem', maxWidth: '18ch', margin: '0 auto 3rem',
+            }}>
+              A próxima geração começa{' '}
+              <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>por você.</em>
+            </h2>
+            <a href="#receba" className="btn-primary" style={{ fontSize: '13px' }}>
+              Receber Ebook + Vídeo grátis
+            </a>
+          </div>
+        </section>
+      );
+    }
+
+    function Footer() {
+      return (
+        <footer className="section-sep" style={{ padding: '4rem 1.5rem 3rem' }}>
+          <div style={{ maxWidth: 1240, margin: '0 auto' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', marginBottom: '3rem', paddingBottom: '3rem', borderBottom: '1px solid var(--line)' }}>
+              {/* Brand */}
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                  <XioMark size={36} />
+                  <span className="eyebrow" style={{ color: 'var(--dim)', fontSize: '10px' }}>XIO / Academy</span>
+                </div>
+                <p style={{ color: 'var(--muted)', fontSize: '13px', lineHeight: 1.7, maxWidth: '22ch' }}>
+                  Academia de IA fundada em Parauapebas, Pará, Brasil.
+                </p>
+              </div>
+
+              {/* Address */}
+              <div>
+                <span className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px', display: 'block', marginBottom: '1rem' }}>Endereço</span>
+                <p style={{ color: 'var(--dim)', fontSize: '13px', lineHeight: 1.8 }}>
+                  Parauapebas · Pará · Brasil<br />
+                  <a href="mailto:contato@xioacademy.com" style={{ color: 'var(--dim)', textDecoration: 'none', borderBottom: '1px solid var(--line)', paddingBottom: '1px' }}>
+                    contato@xioacademy.com
+                  </a>
+                </p>
+              </div>
+
+              {/* Social */}
+              <div>
+                <span className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px', display: 'block', marginBottom: '1rem' }}>Redes</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {['Instagram', 'YouTube', 'TikTok'].map(s => (
+                    <a key={s} href="#" style={{ color: 'var(--dim)', textDecoration: 'none', fontSize: '13px', transition: 'color 0.2s' }}
+                       onMouseEnter={e => e.target.style.color='var(--ink)'}
+                       onMouseLeave={e => e.target.style.color='var(--dim)'}>
+                      {s} ↗
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom row */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+              <span className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px' }}>
+                © 2026 XIO Academy · Todos os direitos reservados
+              </span>
+              <div style={{ display: 'flex', gap: '1.5rem' }}>
+                {['Privacidade', 'Termos'].map(l => (
+                  <a key={l} href="#" style={{ color: 'var(--muted)', textDecoration: 'none', fontSize: '11px', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', transition: 'color 0.2s' }}
+                     onMouseEnter={e => e.target.style.color='var(--dim)'}
+                     onMouseLeave={e => e.target.style.color='var(--muted)'}>
+                    {l}
+                  </a>
+                ))}
+              </div>
+              <span className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px' }}>
+                <span style={{ color: '#22c55e', marginRight: '0.4rem' }}>●</span>
+                Todos os sistemas operacionais
+              </span>
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       12. MOBILE FLOATING CTA
+    ───────────────────────────────────────────── */
+    function FloatingCTA({ scrollY, visible: externalVisible }) {
+      const visible = scrollY > 500 && externalVisible;
+      return (
+        <div className={`floating-cta ${visible ? 'visible' : ''}`} style={{ display: 'none' }} id="floating-cta">
+          <a href="#receba" className="btn-primary" style={{ width: '100%', justifyContent: 'center', borderRadius: '100px', fontSize: '11px', boxShadow: '0 4px 24px rgba(0,0,0,0.6)' }}>
+            Receba ebook + vídeo →
+          </a>
+          <style>{`
+            @media (max-width: 640px) {
+              #floating-cta { display: block !important; }
+            }
+          `}</style>
+        </div>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       TWEAKS PANEL
+    ───────────────────────────────────────────── */
+    /*EDITMODE-BEGIN*/
+    const EDIT_DEFAULTS = {"accent":"gold","floatingCta":true};
+    /*EDITMODE-END*/
+
+    function TweaksPanel() {
+      const [open, setOpen] = useState(false);
+      const [accent, setAccent] = useState('gold');
+      const [floatingCta, setFloatingCta] = useState(true);
+
+      const setAccentMode = (v) => {
+        setAccent(v);
+        document.documentElement.setAttribute('data-accent', v);
+      };
+
+      return (
+        <>
+          {/* Toggle tab */}
+          <button
+            onClick={() => setOpen(!open)}
+            style={{
+              position: 'fixed', bottom: '2rem', right: open ? 238 : '2rem',
+              zIndex: 81, background: 'var(--surface)', border: '1px solid var(--line-md)',
+              color: 'var(--muted)', fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '10px', letterSpacing: '0.12em',
+              padding: '0.6rem 0.75rem', cursor: 'pointer',
+              transition: 'right 0.3s ease',
+            }}
+          >
+            {open ? '×' : 'Edit'}
+          </button>
+
+          <div className={`tweaks-panel ${open ? '' : 'hidden'}`}>
+            <div className="eyebrow" style={{ color: 'var(--muted)', marginBottom: '1.25rem', fontSize: '10px' }}>
+              Painel de edição
+            </div>
+
+            {/* Accent color */}
+            <div style={{ marginBottom: '1.25rem' }}>
+              <div className="eyebrow" style={{ color: 'var(--dim)', fontSize: '9px', marginBottom: '0.6rem' }}>
+                Acento principal
+              </div>
+              <div style={{ display: 'flex', gap: '1px', background: 'var(--line)' }}>
+                {[['gold', 'Ouro'], ['royal', 'Royal'], ['duo', 'Duo']].map(([v, label]) => (
+                  <button key={v}
+                    onClick={() => setAccentMode(v)}
+                    style={{
+                      flex: 1, padding: '0.5rem 0.25rem', border: 'none', cursor: 'pointer',
+                      background: accent === v ? 'var(--accent)' : 'var(--bg)',
+                      color: accent === v ? '#060606' : 'var(--muted)',
+                      fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', letterSpacing: '0.1em',
+                      transition: 'background 0.2s, color 0.2s',
+                    }}
+                  >{label}</button>
+                ))}
+              </div>
+            </div>
+
+            {/* Floating CTA toggle */}
+            <div>
+              <div className="eyebrow" style={{ color: 'var(--dim)', fontSize: '9px', marginBottom: '0.6rem' }}>
+                CTA flutuante (mobile)
+              </div>
+              <button
+                onClick={() => setFloatingCta(!floatingCta)}
+                style={{
+                  width: '100%', padding: '0.5rem', border: '1px solid var(--line-md)',
+                  background: floatingCta ? 'var(--accent)' : 'var(--bg)',
+                  color: floatingCta ? '#060606' : 'var(--muted)',
+                  fontFamily: "'JetBrains Mono', monospace", fontSize: '9px',
+                  cursor: 'pointer', transition: 'background 0.2s, color 0.2s',
+                }}
+              >
+                {floatingCta ? 'Ativado' : 'Desativado'}
+              </button>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    /* ─────────────────────────────────────────────
+       APP ROOT
+    ───────────────────────────────────────────── */
+    function App() {
+      const scrollY = useScrollY();
+
+      return (
+        <div>
+          <LaunchBanner />
+          <Nav scrollY={scrollY} />
+          <main>
+            <Hero />
+            <Fundadores />
+            <VideoSection />
+            <Visao />
+            <LeadCapture />
+            <Planos />
+            <OQueVoceRecebe />
+            <Garantia />
+            <FAQ />
+            <FinalCTA />
+          </main>
+          <Footer />
+          <FloatingCTA scrollY={scrollY} visible={true} />
+          <TweaksPanel />
+        </div>
+      );
+    }
+
+    /* Mount */
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
