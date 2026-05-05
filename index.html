@@ -187,6 +187,15 @@
       to   { transform: rotate(360deg); }
     }
 
+    /* ── Hero Pará highlight ── */
+    .hero-para {
+      display: block;
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
+      text-align: center;
+      margin-top: 0.15em;
+    }
+
     /* ── Section index separator ── */
     .section-sep { border-top: 1px solid var(--line); }
 
@@ -462,7 +471,8 @@
             <h1 className="display-xl" style={{ marginBottom: '2.25rem', maxWidth: '18ch' }}>
               A nova geração da{' '}
               <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>tecnologia</em>{' '}
-              começa no Pará.
+              começa no{' '}
+              <span className="hero-para">Pará.</span>
             </h1>
 
             <p style={{
@@ -810,6 +820,7 @@
       const [error, setError] = useState('');
 
       const validateEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+      const formRef = useRef(null);
 
       const submit = async (ev) => {
         ev.preventDefault();
@@ -817,9 +828,35 @@
         if (!validateEmail(email)) { setError('E-mail inválido.'); return; }
         setError('');
         setLoading(true);
-        await new Promise(r => setTimeout(r, 900));
-        setLoading(false);
-        setSuccess(true);
+
+        const formData = new FormData(formRef.current);
+        console.log('📤 [XIO] Enviando formulário...');
+        console.log('📋 [XIO] Dados:', Object.fromEntries(formData));
+        console.log('🔑 [XIO] Access key presente?', formData.get('access_key') ? 'SIM' : 'NÃO');
+
+        try {
+          const response = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            body: formData,
+          });
+
+          console.log('🌐 [XIO] Status HTTP:', response.status);
+          const result = await response.json();
+          console.log('📥 [XIO] Resposta completa:', result);
+
+          if (result.success) {
+            console.log('✅ [XIO] Email enviado com sucesso!');
+            setSuccess(true);
+          } else {
+            console.error('❌ [XIO] Web3Forms rejeitou:', result);
+            setError('Erro ao enviar. Tente novamente em instantes.');
+          }
+        } catch (err) {
+          console.error('🔴 [XIO] Falha de rede:', err);
+          setError('Falha de conexão. Verifique sua internet e tente novamente.');
+        } finally {
+          setLoading(false);
+        }
       };
 
       return (
@@ -909,11 +946,15 @@
                     </p>
                   </div>
                 ) : (
-                  <form onSubmit={submit} noValidate>
+                  <form ref={formRef} onSubmit={submit} noValidate>
+                    <input type="hidden" name="access_key" value="COLE_SUA_KEY_AQUI" />
+                    <input type="hidden" name="subject" value="Nova entrada na lista XIO Academy" />
+                    <input type="checkbox" name="botcheck" style={{ display: 'none' }} readOnly />
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1px', background: 'var(--line)', marginBottom: '1px' }}>
                       <input
                         className="xio-input"
                         type="text"
+                        name="name"
                         placeholder="Seu nome"
                         value={nome}
                         onChange={e => setNome(e.target.value)}
@@ -921,7 +962,9 @@
                       <input
                         className="xio-input"
                         type="email"
+                        name="email"
                         placeholder="Seu e-mail"
+                        required
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                       />
