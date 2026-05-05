@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reservar Vaga · XIO Academy · Pré-lançamento</title>
+  <meta name="description" content="Reserve sua vaga na XIO Academy com desconto de pré-lançamento. Lançamento oficial 19 de maio de 2026." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:       #060606;
+      --surface:  #0c0c0c;
+      --ink:      #F5F4EE;
+      --dim:      rgba(245,244,238,0.62);
+      --muted:    rgba(245,244,238,0.42);
+      --line:     rgba(245,244,238,0.10);
+      --line-md:  rgba(245,244,238,0.18);
+      --accent:   oklch(0.80 0.065 80);
+      --accent-h: #c9a96e;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection { background: var(--accent); color: #060606; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--line-md); border-radius: 2px; }
+
+    /* ── Header ── */
+    .page-header {
+      border-bottom: 1px solid var(--accent-h);
+      padding: 0 1.5rem;
+    }
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+    .logo-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+    .back-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--ink); }
+
+    /* ── Countdown strip ── */
+    .countdown-strip {
+      border-bottom: 1px solid var(--line);
+      padding: 0.55rem 1.5rem;
+      text-align: center;
+    }
+    #cd-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    /* ── Main ── */
+    .page-main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 5rem 1.5rem 8rem;
+    }
+
+    /* ── Hero ── */
+    .hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: clamp(2.25rem, 5vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+      max-width: 22ch;
+    }
+    .hero-title em { font-style: italic; color: var(--accent); }
+    .hero-sub {
+      color: var(--dim);
+      font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+      font-weight: 300;
+      line-height: 1.75;
+      max-width: 52ch;
+      margin-bottom: 4rem;
+    }
+
+    /* ── Section divider ── */
+    .sec {
+      border-top: 1px solid var(--line);
+      padding-top: 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .sec-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Plan cards ── */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--line);
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 600px) { .plans-grid { grid-template-columns: 1fr; } }
+
+    .plan-card {
+      background: var(--bg);
+      padding: 2rem;
+      cursor: pointer;
+      border-top: 2px solid transparent;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .plan-card:hover { background: var(--surface); }
+    .plan-card.selected { border-top-color: var(--accent); background: var(--surface); }
+    .plan-card input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+
+    .plan-radio {
+      width: 16px; height: 16px;
+      border: 1px solid var(--line-md);
+      border-radius: 50%;
+      margin-bottom: 1.25rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.2s;
+    }
+    .plan-card.selected .plan-radio { border-color: var(--accent); }
+    .plan-radio::after {
+      content: '';
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .plan-card.selected .plan-radio::after { opacity: 1; }
+
+    .plan-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: block; margin-bottom: 0.4rem;
+    }
+    .plan-name {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      display: block; margin-bottom: 0.75rem;
+    }
+    .plan-old {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1rem; color: #666;
+      text-decoration: line-through;
+      text-decoration-thickness: 1px;
+      text-decoration-color: rgba(201,169,110,0.45);
+    }
+    .plan-new {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1; color: var(--ink);
+    }
+    .plan-card.selected .plan-new--featured { color: var(--accent); }
+    .plan-eco {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+      margin-top: 0.3rem; display: block;
+    }
+    .plan-bullets {
+      list-style: none; margin-top: 1.25rem;
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .plan-bullets li {
+      font-size: 13px; color: var(--dim);
+      display: flex; gap: 0.6rem;
+    }
+    .plan-bullets li::before {
+      content: '●'; color: var(--line-md);
+      font-size: 8px; margin-top: 3px; flex-shrink: 0;
+    }
+    .plan-card.selected .plan-bullets li::before { color: var(--accent); }
+
+    /* ── Form fields ── */
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--line); margin-bottom: 1px;
+    }
+    @media (max-width: 600px) { .field-grid { grid-template-columns: 1fr; } }
+    .field-grid-1 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1px; background: var(--line); margin-bottom: 1px;
+    }
+    .field-wrap {
+      background: var(--bg);
+      padding: 0.875rem 1rem;
+    }
+    .field-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--accent);
+      display: block; margin-bottom: 0.4rem;
+    }
+    .xio-input, .xio-textarea {
+      width: 100%; background: transparent; border: none;
+      border-bottom: 1px solid var(--line-md);
+      color: var(--ink);
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 14px; font-weight: 300;
+      padding: 0.4rem 0; outline: none;
+      transition: border-color 0.2s;
+    }
+    .xio-input::placeholder, .xio-textarea::placeholder { color: var(--muted); }
+    .xio-input:focus, .xio-textarea:focus { border-color: var(--accent); }
+    .xio-textarea { resize: none; min-height: 56px; }
+
+    .radio-group { display: flex; gap: 1.5rem; flex-wrap: wrap; padding: 0.4rem 0; }
+    .radio-opt { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 13px; color: var(--dim); }
+    .radio-opt input[type="radio"] { accent-color: var(--accent-h); width: 14px; height: 14px; }
+
+    /* ── Summary ── */
+    .summary-box {
+      border: 1px solid var(--line-md);
+      padding: 1.5rem; background: var(--surface);
+      margin-bottom: 1.5rem;
+    }
+    .sum-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 0.5rem 0; border-bottom: 1px solid var(--line);
+    }
+    .sum-row:last-child { border-bottom: none; }
+    .sum-key {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .sum-val { font-size: 13px; color: var(--ink); }
+    .sum-val.gold { color: var(--accent); }
+
+    /* ── Terms ── */
+    .terms-wrap {
+      display: flex; gap: 0.875rem; align-items: flex-start;
+      border: 1px solid var(--line); padding: 1.25rem; margin-bottom: 1.5rem;
+    }
+    .terms-wrap input[type="checkbox"] {
+      accent-color: var(--accent-h); width: 14px; height: 14px;
+      margin-top: 2px; flex-shrink: 0;
+    }
+    .terms-text { font-size: 13px; color: var(--dim); line-height: 1.65; }
+
+    /* ── Error ── */
+    .form-error {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--accent);
+      margin-bottom: 1rem; display: none;
+    }
+    .form-error.show { display: block; }
+
+    /* ── Security badge ── */
+    .security-badge {
+      text-align: center; margin-bottom: 1.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--muted);
+    }
+
+    /* ── Submit ── */
+    .btn-reserve {
+      display: block; width: 100%;
+      padding: 1.1rem;
+      background: var(--accent); color: #060606;
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      border: none; cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 1rem;
+    }
+    .btn-reserve:hover:not(:disabled) { background: var(--ink); }
+    .btn-reserve:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* ── Trust strip ── */
+    .trust-strip {
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--muted);
+    }
+
+    /* ── Success ── */
+    @keyframes success-in {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    #success-state { display: none; }
+    #success-state.show {
+      display: block;
+      animation: success-in 0.55s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    .success-inner {
+      border: 1px solid var(--accent);
+      padding: 3rem 2.5rem;
+      background: var(--surface);
+      max-width: 640px;
+    }
+    .success-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      line-height: 1.05; margin-bottom: 1.25rem;
+    }
+    .success-sub { color: var(--dim); font-size: 15px; line-height: 1.8; margin-bottom: 2rem; }
+    .success-info {
+      border: 1px solid var(--line); padding: 1.25rem;
+      margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .success-info p { font-size: 13px; color: var(--dim); }
+    .btn-back {
+      display: inline-flex; align-items: center;
+      background: transparent; color: var(--dim);
+      font-family: 'Inter Tight', sans-serif;
+      font-size: 12px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.7rem 1.5rem;
+      border: 1px solid var(--line-md);
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-back:hover { border-color: var(--ink); color: var(--ink); }
+
+    /* ── Footer ── */
+    .page-footer {
+      border-top: 1px solid var(--line);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo-link">
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+          <line x1="2" y1="4" x2="14" y2="22" stroke="#F5F4EE" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="14" y1="4" x2="2" y2="22" stroke="#F5F4EE" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="18" y1="4" x2="18" y2="22" stroke="#F5F4EE" stroke-width="1.2" stroke-linecap="round"/>
+          <ellipse cx="30" cy="13" rx="7" ry="9" stroke="#F5F4EE" stroke-width="1.2" fill="none"/>
+          <circle cx="30" cy="13" r="1.2" fill="#c9a96e"/>
+          <text x="1" y="34" font-family="'JetBrains Mono', monospace" font-size="5.5" letter-spacing="0.15em" fill="#c9a96e">ACADEMY</text>
+        </svg>
+        <span class="logo-label">XIO / Academy</span>
+      </a>
+      <a href="index.html" class="back-link">← Voltar pro site</a>
+    </div>
+  </header>
+
+  <!-- COUNTDOWN STRIP -->
+  <div class="countdown-strip">
+    <span id="cd-text">Calculando...</span>
+  </div>
+
+  <!-- MAIN -->
+  <main class="page-main">
+
+    <!-- HERO -->
+    <section style="margin-bottom: 4rem;">
+      <span class="hero-label">Reserva de Vaga · Pré-lançamento</span>
+      <h1 class="hero-title">Você está a um passo de garantir seu <em>desconto.</em></h1>
+      <p class="hero-sub">
+        Lançamento oficial: 19 de maio, 21:15. Quem reserva agora entra primeiro — com o preço de pré-lançamento travado.
+      </p>
+    </section>
+
+    <!-- FORM WRAPPER -->
+    <div id="form-wrapper">
+
+      <!-- 01 · PLANO -->
+      <div class="sec">
+        <span class="sec-label">01 · Escolha seu plano</span>
+        <div class="plans-grid">
+
+          <!-- Start -->
+          <div class="plan-card" id="card-start" onclick="selectPlan('start')">
+            <input type="radio" name="plano_selecionado" id="radio-start" value="Start">
+            <div class="plan-radio"></div>
+            <span class="plan-name">Start</span>
+            <div>
+              <span class="plan-old">R$ 199</span>
+              <div class="plan-new">
+                <span style="font-size:55%;vertical-align:top;margin-top:0.3em;display:inline-block;">R$</span>149
+              </div>
+              <span class="plan-eco">Economia de R$ 50 · pagamento único</span>
+            </div>
+            <ul class="plan-bullets">
+              <li>5 ebooks da biblioteca XIO</li>
+              <li>Suporte direto com os fundadores</li>
+              <li>Acesso por 12 meses</li>
+              <li>Atualizações de conteúdo incluídas</li>
+            </ul>
+          </div>
+
+          <!-- Experience -->
+          <div class="plan-card selected" id="card-experience" onclick="selectPlan('experience')">
+            <input type="radio" name="plano_selecionado" id="radio-experience" value="Experience" checked>
+            <div class="plan-radio"></div>
+            <span class="plan-badge">Recomendado</span>
+            <span class="plan-name">Experience</span>
+            <div>
+              <span class="plan-old">R$ 499</span>
+              <div class="plan-new plan-new--featured" style="color:var(--accent);">
+                <span style="font-size:55%;vertical-align:top;margin-top:0.3em;display:inline-block;">R$</span>399
+              </div>
+              <span class="plan-eco">Economia de R$ 100 · pagamento único</span>
+            </div>
+            <ul class="plan-bullets">
+              <li>Mais de 5 aulas em vídeo</li>
+              <li>Ebooks completos da XIO</li>
+              <li>Suporte direto com os fundadores</li>
+              <li>Acesso à comunidade XIO</li>
+              <li>Acesso vitalício</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 02 · DADOS -->
+      <div class="sec">
+        <span class="sec-label">02 · Seus dados</span>
+
+        <form id="reserva-form" novalidate>
+          <input type="hidden" name="access_key" value="1b8793e7-970b-4d5f-bf75-59a3ec4ef80e">
+          <input type="hidden" name="subject"   id="f-subject" value="🔥 RESERVA DE VAGA - Experience - XIO Academy">
+          <input type="hidden" name="from_name" value="XIO Reservas">
+          <input type="hidden" name="tipo_lead" value="RESERVA_VAGA">
+          <input type="hidden" name="plano"     id="f-plano"   value="Experience">
+          <input type="checkbox" name="botcheck" style="display:none" tabindex="-1">
+
+          <div class="field-grid">
+            <div class="field-wrap">
+              <label class="field-label" for="f-nome">Nome completo</label>
+              <input class="xio-input" type="text" id="f-nome" name="name" placeholder="Seu nome completo" required>
+            </div>
+            <div class="field-wrap">
+              <label class="field-label" for="f-email">E-mail</label>
+              <input class="xio-input" type="email" id="f-email" name="email" placeholder="seu@email.com" required>
+            </div>
+          </div>
+
+          <div class="field-grid" style="margin-top:1px;">
+            <div class="field-wrap">
+              <label class="field-label" for="f-whats">WhatsApp (com DDD)</label>
+              <input class="xio-input" type="tel" id="f-whats" name="whatsapp" placeholder="(93) 99999-9999" required>
+            </div>
+            <div class="field-wrap">
+              <label class="field-label" for="f-cidade">Cidade onde mora</label>
+              <input class="xio-input" type="text" id="f-cidade" name="cidade" placeholder="Ex: Parauapebas" required>
+            </div>
+          </div>
+
+          <div class="field-grid-1" style="margin-top:1px;">
+            <div class="field-wrap">
+              <label class="field-label">Você é de Parauapebas?</label>
+              <div class="radio-group">
+                <label class="radio-opt"><input type="radio" name="de_parauapebas" value="Sim"> Sim</label>
+                <label class="radio-opt"><input type="radio" name="de_parauapebas" value="Não"> Não</label>
+                <label class="radio-opt"><input type="radio" name="de_parauapebas" value="Outra cidade do PA"> Outra cidade do PA</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-grid-1" style="margin-top:1px;">
+            <div class="field-wrap">
+              <label class="field-label" for="f-feedback">
+                O que mais te chamou atenção na XIO?
+                <span style="color:var(--muted);font-size:8px;letter-spacing:0;text-transform:none;"> (opcional)</span>
+              </label>
+              <textarea class="xio-textarea" id="f-feedback" name="feedback" placeholder="Pode escrever à vontade..."></textarea>
+            </div>
+          </div>
+
+          <!-- 03 · RESUMO -->
+          <div class="sec">
+            <span class="sec-label">03 · Resumo da reserva</span>
+            <div class="summary-box">
+              <div class="sum-row">
+                <span class="sum-key">Plano</span>
+                <span class="sum-val" id="sum-plano">Experience</span>
+              </div>
+              <div class="sum-row">
+                <span class="sum-key">Preço de pré-lançamento</span>
+                <span class="sum-val gold" id="sum-preco">R$ 399</span>
+              </div>
+              <div class="sum-row">
+                <span class="sum-key">Desconto garantido</span>
+                <span class="sum-val" id="sum-eco">R$ 100</span>
+              </div>
+              <div class="sum-row">
+                <span class="sum-key">Lançamento oficial</span>
+                <span class="sum-val">19/05/2026 · 21:15 (BRT)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TERMOS -->
+          <div class="terms-wrap">
+            <input type="checkbox" id="termos" name="termos" required>
+            <label class="terms-text" for="termos">
+              Entendi que esta é uma reserva gratuita. O pagamento só acontecerá no dia 19/05/2026, quando receberei link prioritário com o preço travado de pré-lançamento.
+            </label>
+          </div>
+
+          <!-- ERRO -->
+          <p class="form-error" id="form-error"></p>
+
+          <!-- BADGE -->
+          <div class="security-badge">🔒 Reserva gratuita · Cancele quando quiser</div>
+
+          <!-- BOTÃO -->
+          <button type="submit" class="btn-reserve" id="btn-submit">Garantir minha vaga →</button>
+
+          <!-- TRUST -->
+          <div class="trust-strip">
+            Sem pagamento agora · Reserva gratuita · Parauapebas, PA · technologiesxio@gmail.com
+          </div>
+
+        </form>
+      </div>
+
+    </div><!-- /form-wrapper -->
+
+    <!-- SUCCESS STATE -->
+    <div id="success-state">
+      <div class="success-inner">
+        <div style="width:40px;height:1px;background:var(--accent);margin-bottom:2rem;"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);margin-bottom:1.25rem;">Reserva confirmada</div>
+        <h2 class="success-title">Sua vaga está reservada.</h2>
+        <p class="success-sub">
+          No dia 19 de maio, às 21:15 (BRT), você receberá um e-mail com link prioritário para finalizar sua matrícula com o desconto de pré-lançamento garantido.
+        </p>
+        <div class="success-info">
+          <p>📧 Confirmação enviada para <strong id="success-email" style="color:var(--ink);"></strong></p>
+          <p>⏰ Lançamento em <span id="success-cd" style="color:var(--accent);"></span></p>
+          <p>📱 Dúvidas? <a href="mailto:technologiesxio@gmail.com" style="color:var(--accent);text-decoration:none;">technologiesxio@gmail.com</a></p>
+        </div>
+        <a href="index.html" class="btn-back">Voltar pro site</a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="page-footer">
+    © 2026 XIO Academy · Parauapebas, Pará, Brasil · Todos os direitos reservados
+  </footer>
+
+  <script>
+    const LAUNCH = new Date('2026-05-19T21:15:00-03:00');
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function updateCountdown() {
+      const diff = LAUNCH - Date.now();
+      if (diff <= 0) {
+        document.getElementById('cd-text').textContent = '● Lançamento ao vivo agora';
+        return;
+      }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      document.getElementById('cd-text').textContent =
+        `Faltam ${d} dias · ${pad(h)}h · ${pad(m)}min · ${pad(s)}s pro lançamento`;
+      const sc = document.getElementById('success-cd');
+      if (sc) sc.textContent = `${d}d ${pad(h)}h ${pad(m)}min`;
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    const plans = {
+      start:      { label: 'Start',      preco: 'R$ 149', eco: 'R$ 50',  subject: '🔥 RESERVA DE VAGA - Start - XIO Academy' },
+      experience: { label: 'Experience', preco: 'R$ 399', eco: 'R$ 100', subject: '🔥 RESERVA DE VAGA - Experience - XIO Academy' },
+    };
+
+    function selectPlan(key) {
+      document.getElementById('card-start').classList.toggle('selected', key === 'start');
+      document.getElementById('card-experience').classList.toggle('selected', key === 'experience');
+      document.getElementById('radio-start').checked = key === 'start';
+      document.getElementById('radio-experience').checked = key === 'experience';
+      const p = plans[key];
+      document.getElementById('sum-plano').textContent = p.label;
+      document.getElementById('sum-preco').textContent = p.preco;
+      document.getElementById('sum-eco').textContent   = p.eco;
+      document.getElementById('f-subject').value       = p.subject;
+      document.getElementById('f-plano').value         = p.label;
+    }
+
+    // WhatsApp mask
+    document.getElementById('f-whats').addEventListener('input', function(e) {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+      if      (v.length > 6) v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+      else if (v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+      else if (v.length > 0) v = `(${v}`;
+      e.target.value = v;
+    });
+
+    // Form submit
+    document.getElementById('reserva-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const nome   = document.getElementById('f-nome').value.trim();
+      const email  = document.getElementById('f-email').value.trim();
+      const whats  = document.getElementById('f-whats').value.trim();
+      const cidade = document.getElementById('f-cidade').value.trim();
+      const termos = document.getElementById('termos').checked;
+      const errEl  = document.getElementById('form-error');
+
+      const showErr = msg => { errEl.textContent = msg; errEl.classList.add('show'); };
+      errEl.classList.remove('show');
+
+      if (!nome)   { showErr('Informe seu nome.'); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr('E-mail inválido.'); return; }
+      if (!whats)  { showErr('Informe seu WhatsApp.'); return; }
+      if (!cidade) { showErr('Informe sua cidade.'); return; }
+      if (!termos) { showErr('Confirme que entendeu os termos da reserva.'); return; }
+
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+
+      const formData = new FormData(this);
+      console.log('📤 [XIO Reservas] Enviando...', Object.fromEntries(formData));
+      console.log('🔑 [XIO Reservas] Access key presente?', formData.get('access_key') ? 'SIM' : 'NÃO');
+
+      try {
+        const res    = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData });
+        console.log('🌐 Status HTTP:', res.status);
+        const result = await res.json();
+        console.log('📥 Resposta:', result);
+
+        if (result.success) {
+          console.log('✅ Reserva enviada com sucesso!');
+          document.getElementById('success-email').textContent = email;
+          document.getElementById('form-wrapper').style.display = 'none';
+          document.getElementById('success-state').classList.add('show');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          console.error('❌ Web3Forms rejeitou:', result);
+          showErr('Algo deu errado. Tenta novamente ou manda um email pra technologiesxio@gmail.com.');
+          btn.disabled = false;
+          btn.textContent = 'Garantir minha vaga →';
+        }
+      } catch (err) {
+        console.error('🔴 Falha de rede:', err);
+        showErr('Falha de conexão. Verifique sua internet e tente novamente.');
+        btn.disabled = false;
+        btn.textContent = 'Garantir minha vaga →';
+      }
+    });
+  </script>
+
+</body>
+</html>

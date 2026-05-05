@@ -589,9 +589,9 @@
     ───────────────────────────────────────────── */
     const founders = [
       {
-        name: 'Iuri Moreira', age: 21, role: 'Co-fundador', loc: 'Parauapebas · PA',
+        name: 'Iuri Moreira', age: 21, role: 'CEO & Co-fundador', loc: 'Parauapebas · PA',
         photo: 'assets/iuri.jpg', photoPos: 'center top',
-        bio: 'Estudante de Odontologia em Parauapebas. Estuda IA por conta própria há dois anos e acredita que a próxima geração de empreendedores do Pará vai nascer da intersecção entre ciência, tecnologia e ambição local.',
+        bio: 'Estudante de Odontologia em Parauapebas. Aprendeu IA por conta própria — e há 6 meses trabalha aplicando inteligência artificial em uma empresa de tecnologia da cidade. Acredita que a próxima geração de empreendedores do Pará vai nascer da intersecção entre ciência, tecnologia e ambição local.',
       },
       {
         name: 'Octávio Lobo', age: 21, role: 'Co-fundador', loc: 'Vancouver · CA',
@@ -908,9 +908,9 @@
                       Pacote XIO 001 · Ebook
                     </span>
                     <p className="font-display" style={{ fontSize: 'clamp(1rem, 2.5vw, 1.4rem)', fontWeight: 300, lineHeight: 1.3, marginBottom: '1rem' }}>
-                      O guia honesto para começar em IA a partir do Pará.
+                      A virada de chave antes de tocar em qualquer código.
                     </p>
-                    <span className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px' }}>48 páginas</span>
+                    <span className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px' }}>12 min de leitura</span>
                   </div>
 
                   {/* Video mock */}
@@ -932,7 +932,7 @@
                         Pacote XIO 001 · Vídeo
                       </span>
                       <p style={{ fontSize: '13px', color: 'var(--dim)', fontWeight: 300 }}>
-                        Aula introdutória · 22 min · com Iuri e Octávio
+                        Aula introdutória · direto ao ponto · com Iuri e Octávio
                       </p>
                     </div>
                   </div>
@@ -1017,7 +1017,7 @@
     function Planos() {
       const plans = [
         {
-          name: 'Start', price: '149', tag: 'Para começar com clareza',
+          name: 'Start', price: '149', oldPrice: '199', economy: '50', tag: 'Para começar com clareza',
           featured: false,
           blurb: 'Cinco ebooks essenciais e suporte direto com os fundadores. O suficiente para sair do zero com método.',
           bullets: [
@@ -1028,7 +1028,7 @@
           ],
         },
         {
-          name: 'Experience', price: '399', tag: 'A formação completa',
+          name: 'Experience', price: '399', oldPrice: '499', economy: '100', tag: 'A formação completa',
           featured: true, badge: 'Mais escolhido',
           blurb: 'Para quem decidiu — não está testando. Aulas em vídeo, ebooks completos e a comunidade XIO.',
           bullets: [
@@ -1074,6 +1074,23 @@
                     {plan.tag}
                   </span>
 
+                  <span style={{
+                    display: 'block', marginBottom: '6px',
+                    fontFamily: "'Inter Tight', sans-serif", fontSize: '10px', fontWeight: 500,
+                    letterSpacing: '0.18em', textTransform: 'uppercase',
+                    color: 'var(--accent)',
+                  }}>Pré-lançamento · até 19/05</span>
+
+                  <div className="font-display" style={{
+                    fontSize: 'clamp(1rem, 2vw, 1.5rem)', fontWeight: 300,
+                    color: '#666', marginBottom: '4px',
+                    textDecoration: 'line-through',
+                    textDecorationThickness: '1px',
+                    textDecorationColor: 'rgba(201,169,110,0.5)',
+                  }}>
+                    <span style={{ fontSize: '75%' }}>R$</span>{plan.oldPrice}
+                  </div>
+
                   <div className="font-display" style={{
                     fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: 300, lineHeight: 1,
                     color: plan.featured ? 'var(--accent)' : 'var(--ink)',
@@ -1083,7 +1100,7 @@
                     {plan.price}
                   </div>
                   <span className="eyebrow" style={{ color: 'var(--muted)', fontSize: '10px', display: 'block', marginBottom: '1.75rem' }}>
-                    pagamento único
+                    Pagamento único · Economia de R$ {plan.economy}
                   </span>
 
                   <h3 className="font-display" style={{ fontSize: 'clamp(1.4rem, 3vw, 1.875rem)', fontWeight: 300, marginBottom: '1rem' }}>
@@ -1103,11 +1120,11 @@
                   </ul>
 
                   {plan.featured ? (
-                    <a href="#receba" className="btn-outline-accent" style={{ width: '100%', justifyContent: 'center' }}>
+                    <a href="reservar.html" className="btn-outline-accent" style={{ width: '100%', justifyContent: 'center' }}>
                       Reservar vaga
                     </a>
                   ) : (
-                    <a href="#receba" className="btn-outline" style={{ width: '100%', justifyContent: 'center' }}>
+                    <a href="reservar.html" className="btn-outline" style={{ width: '100%', justifyContent: 'center' }}>
                       Reservar vaga
                     </a>
                   )}
