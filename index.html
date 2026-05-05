@@ -137,6 +137,18 @@
       to   { width: 100%; }
     }
 
+    /* ── Form success ── */
+    @keyframes xio-success-in {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .xio-success {
+      animation: xio-success-in 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      border: 1px solid var(--accent);
+      padding: 2.5rem;
+      background: var(--surface);
+    }
+
     /* ── Nav blur ── */
     .nav-scrolled {
       background: rgba(6,6,6,0.85) !important;
@@ -849,11 +861,11 @@
             setSuccess(true);
           } else {
             console.error('❌ [XIO] Web3Forms rejeitou:', result);
-            setError('Erro ao enviar. Tente novamente em instantes.');
+            setError('Algo deu errado. Tenta de novo em instantes ou manda um email direto pra technologiesxio@gmail.com.');
           }
         } catch (err) {
           console.error('🔴 [XIO] Falha de rede:', err);
-          setError('Falha de conexão. Verifique sua internet e tente novamente.');
+          setError('Algo deu errado. Tenta de novo em instantes ou manda um email direto pra technologiesxio@gmail.com.');
         } finally {
           setLoading(false);
         }
@@ -931,18 +943,24 @@
                 </h2>
 
                 {success ? (
-                  <div style={{
-                    border: '1px solid var(--accent)', padding: '2.5rem',
-                    background: 'var(--surface)',
-                  }}>
-                    <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: '1rem' }}>Confirmado</div>
-                    <p className="font-display" style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: 300, marginBottom: '1rem' }}>
-                      Bem-vinda(o) ao começo.
+                  <div className="xio-success">
+                    {/* Gold line */}
+                    <div style={{ width: 40, height: 1, background: 'var(--accent)', marginBottom: '2rem' }} />
+
+                    <div className="eyebrow" style={{ color: 'var(--accent)', marginBottom: '1.25rem' }}>
+                      Confirmado
+                    </div>
+
+                    <p className="font-display" style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: 300, marginBottom: '1.25rem', color: 'var(--ink)' }}>
+                      Recebemos seu pedido.
                     </p>
-                    <p style={{ color: 'var(--dim)', fontSize: '14px', lineHeight: 1.75 }}>
-                      Enviamos o ebook e o link do vídeo para{' '}
-                      <span style={{ color: 'var(--ink)', fontWeight: 400 }}>{email}</span>.
-                      Fique de olho — pode cair no spam na primeira vez.
+
+                    <p style={{ color: 'var(--dim)', fontSize: '14.5px', lineHeight: 1.8, marginBottom: '1.75rem' }}>
+                      Em instantes, nossa equipe vai te enviar o ebook e o vídeo direto no email que você cadastrou. Confere também a caixa de spam — às vezes o material cai por lá nas primeiras vezes.
+                    </p>
+
+                    <p style={{ color: 'var(--muted)', fontSize: '11px', fontStyle: 'italic' }}>
+                      Enviado manualmente pela equipe XIO · Parauapebas, PA
                     </p>
                   </div>
                 ) : (
