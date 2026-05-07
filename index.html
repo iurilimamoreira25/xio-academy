@@ -516,11 +516,14 @@
     /* ─────────────────────────────────────────────
        1. STICKY NAV
     ───────────────────────────────────────────── */
+    const BANNER_H = 36; // altura aprox. do LaunchBanner em px
+
     function Nav({ scrollY }) {
-      const scrolled = scrollY > 24;
+      const navTop = Math.max(0, BANNER_H - scrollY);
+      const scrolled = scrollY >= BANNER_H;
       return (
         <nav style={{
-          position: 'fixed', top: 0, left: 0, right: 0, zIndex: 40,
+          position: 'fixed', top: navTop, left: 0, right: 0, zIndex: 40,
           padding: '0 1.5rem',
           transition: 'background 0.3s, backdrop-filter 0.3s, border-color 0.3s',
           background: scrolled ? 'rgba(6,6,6,0.85)' : 'transparent',
