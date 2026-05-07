@@ -330,56 +330,60 @@
       height: 100%; background: var(--accent); width: 0;
     }
 
-    /* ── Hero: word-by-word entrada (CSS transition, só na carga) ── */
+    /* ── Hero: word-by-word entrada — materializa do ar (Apple Vision) ── */
     .hw {
       display: inline-block;
       opacity: 0;
-      transform: translateY(0.5em);
+      transform: translateY(0.55em);
+      filter: blur(7px);
       transition:
-        opacity  0.8s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: opacity, transform;
+        opacity   0.88s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.88s cubic-bezier(0.16, 1, 0.3, 1),
+        filter    0.88s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform, filter;
     }
-    .hw.in { opacity: 1; transform: none; }
+    .hw.in { opacity: 1; transform: none; filter: blur(0px); }
 
     .hsr {
       opacity: 0;
-      transform: translateY(22px);
+      transform: translateY(32px);
+      filter: blur(12px);
       transition:
-        opacity  0.9s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: opacity, transform;
+        opacity   1.05s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 1.05s cubic-bezier(0.16, 1, 0.3, 1),
+        filter    1.05s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform, filter;
     }
-    .hsr.in { opacity: 1; transform: none; }
+    .hsr.in { opacity: 1; transform: none; filter: blur(0px); }
 
     /*
-      .sa  .sa-scale  .sa-left  .sa-img-wrap
-      --p é definido pelo JS a cada frame (0 = fora, 1 = visível)
-      SEM transition — o valor muda em tempo real com o scroll
+      .sa  .sa-scale  .sa-left  .sa-img-wrap  .sa-depth  .sa-reveal
+      --p definido pelo JS via rAF (0=fora → 1=visível) com ease-out cubic
+      Animação É o scroll — sem transition, sem IntersectionObserver
     */
 
     /* Rise + fade */
     .sa {
-      opacity: clamp(0, calc(var(--p, 0) * 1.8), 1);
-      transform: translateY(calc((1 - clamp(0, calc(var(--p, 0) * 1.3), 1)) * 56px));
+      opacity: clamp(0, calc(var(--p, 0) * 2.2), 1);
+      transform: translateY(calc((1 - clamp(0, calc(var(--p, 0) * 1.4), 1)) * 80px));
       will-change: opacity, transform;
     }
     .sa.done { will-change: auto; opacity: 1; transform: none; }
 
-    /* Scale + rise (cards) */
+    /* Scale + rise — massa física (cards) */
     .sa-scale {
-      opacity: clamp(0, calc(var(--p, 0) * 1.8), 1);
+      opacity: clamp(0, calc(var(--p, 0) * 2.2), 1);
       transform:
-        scale(calc(0.93 + clamp(0, calc(var(--p, 0) * 1.3), 1) * 0.07))
-        translateY(calc((1 - clamp(0, calc(var(--p, 0) * 1.3), 1)) * 32px));
+        scale(calc(0.88 + clamp(0, calc(var(--p, 0) * 1.4), 1) * 0.12))
+        translateY(calc((1 - clamp(0, calc(var(--p, 0) * 1.4), 1)) * 52px));
       will-change: opacity, transform;
     }
     .sa-scale.done { will-change: auto; opacity: 1; transform: none; }
 
     /* Slide from left (section headers) */
     .sa-left {
-      opacity: clamp(0, calc(var(--p, 0) * 2), 1);
-      transform: translateX(calc((1 - clamp(0, calc(var(--p, 0) * 1.5), 1)) * -40px));
+      opacity: clamp(0, calc(var(--p, 0) * 2.8), 1);
+      transform: translateX(calc((1 - clamp(0, calc(var(--p, 0) * 1.6), 1)) * -52px));
       will-change: opacity, transform;
     }
     .sa-left.done { will-change: auto; opacity: 1; transform: none; }
@@ -387,10 +391,41 @@
     /* Image zoom-out (Apple signature: começa zoom e assenta) */
     .sa-img-wrap { overflow: hidden; }
     .sa-img-wrap img {
-      transform: scale(calc(1.09 - clamp(0, calc(var(--p, 0) * 1.3), 1) * 0.09));
+      transform: scale(calc(1.14 - clamp(0, calc(var(--p, 0) * 1.4), 1) * 0.14));
       will-change: transform;
     }
     .sa-img-wrap.done img { will-change: auto; transform: none; }
+
+    /* Depth reveal — blur+scale vindo do espaço (Apple Vision / M-series) */
+    .sa-depth {
+      opacity: clamp(0, calc(var(--p,0) * 2.6), 1);
+      transform:
+        scale(calc(0.83 + clamp(0, calc(var(--p,0) * 1.5), 1) * 0.17))
+        translateY(calc((1 - clamp(0, calc(var(--p,0) * 1.5), 1)) * 68px));
+      filter: blur(calc((1 - clamp(0, calc(var(--p,0) * 1.7), 1)) * 12px));
+      will-change: opacity, transform, filter;
+    }
+    .sa-depth.done { will-change: auto; opacity: 1; transform: none; filter: none; }
+
+    /* Gradient wipe reveal — da esquerda pra direita (Apple editorial typography) */
+    .sa-reveal {
+      position: relative;
+      transform: translateX(calc((1 - clamp(0, calc(var(--p,0) * 1.4), 1)) * -22px));
+      will-change: transform;
+    }
+    .sa-reveal.done { will-change: auto; transform: none; }
+    .sa-reveal::after {
+      content: '';
+      position: absolute;
+      inset: -0.1em 0;
+      background: var(--bg);
+      transform-origin: right center;
+      transform: scaleX(calc(1 - clamp(0, calc(var(--p,0) * 1.28), 1)));
+      pointer-events: none;
+      z-index: 2;
+      will-change: transform;
+    }
+    .sa-reveal.done::after { display: none; }
 
     /* Parallax watermark hero */
     .xio-wm {
@@ -406,11 +441,12 @@
 
     /* Acessibilidade */
     @media (prefers-reduced-motion: reduce) {
-      .hw, .hsr, .sa, .sa-scale, .sa-left {
+      .hw, .hsr, .sa, .sa-scale, .sa-left, .sa-depth, .sa-reveal {
         opacity: 1 !important; transform: none !important;
-        transition: none !important;
+        filter: none !important; transition: none !important;
       }
       .sa-img-wrap img { transform: none !important; }
+      .sa-reveal::after { display: none !important; }
     }
   </style>
 </head>
@@ -665,6 +701,8 @@
 
           {/* Marquee strip */}
           <div style={{ borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', overflow: 'hidden', position: 'relative', zIndex: 2 }}>
+            <div style={{ position:'absolute', top:0, bottom:0, left:0, width:'8rem', background:'linear-gradient(90deg, var(--bg), transparent)', zIndex:4, pointerEvents:'none' }} />
+            <div style={{ position:'absolute', top:0, bottom:0, right:0, width:'8rem', background:'linear-gradient(270deg, var(--bg), transparent)', zIndex:4, pointerEvents:'none' }} />
             <div className="marquee-track" style={{ padding: '0.875rem 0' }}>
               {[1,2].map(i => (
                 <span key={i} className="eyebrow" style={{ color: 'var(--dim)', display: 'flex', gap: '0', alignItems: 'center', paddingRight: 0 }}>
@@ -734,13 +772,13 @@
               <span className="eyebrow">Os fundadores</span>
             </div>
 
-            <p className="display-md sa" style={{ maxWidth: '28ch', marginBottom: '4rem' }}>
+            <p className="display-md sa-reveal" style={{ maxWidth: '28ch', marginBottom: '4rem' }}>
               Dois jovens paraenses com a mesma <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>inquietação.</em>
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1px', background: 'var(--line)' }}>
               {founders.map((f, idx) => (
-                <div key={f.name} className="sa-scale" data-sd={-idx * 55} style={{ background: 'var(--bg)', padding: '2.5rem 2rem' }}>
+                <div key={f.name} className="sa-depth" data-sd={-idx * 55} style={{ background: 'var(--bg)', padding: '2.5rem 2rem' }}>
                   {/* Image zoom-out reveal — Apple signature */}
                   <div className="sa-img-wrap" style={{ aspectRatio: '4/5', border: '1px solid var(--line)' }}>
                     <img src={f.photo} alt={f.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: f.photoPos, display: 'block' }} />
@@ -770,38 +808,44 @@
     function VideoSection() {
       const [playing, setPlaying] = useState(false);
       const [currentTime, setCurrentTime] = useState(0);
-      const [duration] = useState(12);
+      const [duration, setDuration] = useState(12);
+      const [hovering, setHovering] = useState(false);
       const videoRef = useRef(null);
-      const timerRef = useRef(null);
 
       const toggle = useCallback(() => {
-        setPlaying(p => !p);
-        /* When a real video file is provided, uncomment:
-        if (videoRef.current) {
-          playing ? videoRef.current.pause() : videoRef.current.play();
-        } */
+        const v = videoRef.current;
+        if (!v) return;
+        if (v.paused) {
+          v.play();
+        } else {
+          v.pause();
+        }
       }, []);
 
       useEffect(() => {
-        if (playing) {
-          timerRef.current = setInterval(() => {
-            setCurrentTime(prev => {
-              if (prev >= 12) {
-                setPlaying(false);
-                clearInterval(timerRef.current);
-                setTimeout(() => setCurrentTime(0), 800);
-                return 12;
-              }
-              return prev + 0.1;
-            });
-          }, 100);
-        } else {
-          clearInterval(timerRef.current);
-        }
-        return () => clearInterval(timerRef.current);
-      }, [playing]);
+        const v = videoRef.current;
+        if (!v) return;
+        const onPlay    = () => setPlaying(true);
+        const onPause   = () => setPlaying(false);
+        const onEnded   = () => { setPlaying(false); v.currentTime = 0; };
+        const onTime    = () => setCurrentTime(v.currentTime);
+        const onMeta    = () => setDuration(v.duration || 12);
+        v.addEventListener('play',        onPlay);
+        v.addEventListener('pause',       onPause);
+        v.addEventListener('ended',       onEnded);
+        v.addEventListener('timeupdate',  onTime);
+        v.addEventListener('loadedmetadata', onMeta);
+        return () => {
+          v.removeEventListener('play',        onPlay);
+          v.removeEventListener('pause',       onPause);
+          v.removeEventListener('ended',       onEnded);
+          v.removeEventListener('timeupdate',  onTime);
+          v.removeEventListener('loadedmetadata', onMeta);
+        };
+      }, []);
 
-      const progress = (currentTime / duration) * 100;
+      const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+      const remaining = Math.max(0, Math.ceil(duration - currentTime));
       const fmt = s => `${String(Math.floor(s / 60)).padStart(2,'0')}:${String(Math.floor(s % 60)).padStart(2,'0')}`;
 
       return (
@@ -812,66 +856,67 @@
               <span className="eyebrow">Vídeo de apresentação</span>
             </div>
 
-            <h2 className="display-md sa" style={{ maxWidth: '22ch', marginBottom: '3rem' }}>
+            <h2 className="display-md sa-reveal" style={{ maxWidth: '22ch', marginBottom: '3rem' }}>
               Doze segundos para entender <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>o porquê.</em>
             </h2>
 
-            <div className="sa-scale" style={{ maxWidth: 900, margin: '0 auto' }}>
-              {/* Player frame */}
-              <div style={{
-                aspectRatio: '16/9', border: '1px solid var(--line-md)',
-                position: 'relative', overflow: 'hidden', background: 'var(--surface)',
-                cursor: 'pointer',
-              }} onClick={toggle}>
-                {/* Placeholder bg */}
-                <div className="diagonal-stripe" style={{ position: 'absolute', inset: 0 }} />
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  background: 'radial-gradient(ellipse at 50% 50%, oklch(0.80 0.065 80 / 0.12) 0%, transparent 65%)',
-                }} />
-
-                {/* Video element (hidden until real file) */}
-                <video ref={videoRef} style={{ display: 'none' }} playsInline>
-                  {/* <source src="assets/xio-presentation.mp4" type="video/mp4" /> */}
+            <div className="sa-depth" style={{ maxWidth: 480, margin: '0 auto', width: '100%' }}>
+              {/* Player frame — wrapper controla largura; container define proporção por aspect-ratio */}
+              <div
+                style={{
+                  position: 'relative', overflow: 'hidden',
+                  aspectRatio: '9/16', width: '100%',
+                  border: '1px solid var(--line-md)', background: '#000',
+                  cursor: 'pointer',
+                }}
+                onClick={toggle}
+                onMouseEnter={() => setHovering(true)}
+                onMouseLeave={() => setHovering(false)}
+              >
+                {/* Real video */}
+                <video
+                  ref={videoRef}
+                  playsInline
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                >
+                  <source src="reels_2026-05-07_19-23-40.mp4" type="video/mp4" />
                 </video>
 
-                {/* Top meta */}
-                <div style={{ position: 'absolute', top: '1rem', left: '1rem', right: '1rem', display: 'flex', justifyContent: 'space-between', zIndex: 2 }}>
+                {/* Top meta — visible on hover or paused */}
+                <div style={{
+                  position: 'absolute', top: 0, left: 0, right: 0,
+                  padding: '1rem',
+                  background: 'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 100%)',
+                  display: 'flex', justifyContent: 'space-between', zIndex: 2,
+                  opacity: (!playing || hovering) ? 1 : 0,
+                  transition: 'opacity 0.3s',
+                }}>
                   <span className="eyebrow" style={{ fontSize: '10px' }}>XIO / 2026 · Apresentação</span>
-                  <span className="eyebrow" style={{ fontSize: '10px', color: 'var(--accent)' }}>{12 - Math.floor(currentTime)}s restantes</span>
+                  <span className="eyebrow" style={{ fontSize: '10px', color: 'var(--accent)' }}>{remaining}s restantes</span>
                 </div>
 
-                {/* Center XIO mark */}
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>
-                  {!playing && (
-                    <div style={{
-                      fontFamily: "'Cormorant Garamond', serif",
-                      fontWeight: 300, fontSize: 'clamp(3rem, 8vw, 7rem)',
-                      color: 'var(--ink)', opacity: 0.06,
-                      letterSpacing: '-0.04em',
-                    }}>XIO</div>
-                  )}
-                </div>
-
-                {/* Play button */}
+                {/* Play/Pause button */}
                 <div style={{
                   position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3,
+                  opacity: (!playing || hovering) ? 1 : 0,
+                  transition: 'opacity 0.3s',
                 }}>
                   <button onClick={e => { e.stopPropagation(); toggle(); }} style={{
-                    width: 96, height: 96, borderRadius: '50%',
-                    background: 'rgba(6,6,6,0.7)', border: '1px solid var(--line-md)',
+                    width: 80, height: 80, borderRadius: '50%',
+                    background: 'rgba(6,6,6,0.65)', border: '1px solid var(--line-md)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     cursor: 'pointer', transition: 'border-color 0.2s, transform 0.2s',
+                    backdropFilter: 'blur(8px)',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.transform = 'scale(1.04)'; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.transform = 'scale(1.06)'; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--line-md)'; e.currentTarget.style.transform = 'scale(1)'; }}>
                     {playing ? (
-                      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                      <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
                         <rect x="7" y="6" width="4" height="16" fill="var(--ink)" rx="1"/>
                         <rect x="17" y="6" width="4" height="16" fill="var(--ink)" rx="1"/>
                       </svg>
                     ) : (
-                      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                      <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
                         <path d="M10 7l14 7-14 7V7z" fill="var(--ink)" />
                       </svg>
                     )}
@@ -879,7 +924,12 @@
                 </div>
 
                 {/* Progress bar */}
-                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 4 }}>
+                <div style={{
+                  position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 4,
+                  background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%)',
+                  opacity: (!playing || hovering) ? 1 : 0,
+                  transition: 'opacity 0.3s',
+                }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.4rem 1rem', alignItems: 'center' }}>
                     <span className="eyebrow" style={{ fontSize: '9px' }}>{fmt(currentTime)}</span>
                     <span className="eyebrow" style={{ fontSize: '9px' }}>{fmt(duration)}</span>
@@ -891,7 +941,7 @@
               </div>
 
               <p className="eyebrow" style={{ marginTop: '1rem', color: 'var(--muted)', fontSize: '10px', textAlign: 'center' }}>
-                Recorte de 12 segundos · sem áudio para autoplay · com som ao reproduzir
+                Recorte de 12 segundos · com som ao reproduzir
               </p>
             </div>
           </div>
@@ -926,7 +976,7 @@
               <span className="eyebrow">A visão</span>
             </div>
 
-            <h2 className="display-md sa" style={{ maxWidth: '26ch', marginBottom: '4rem' }}>
+            <h2 className="display-md sa-reveal" style={{ maxWidth: '26ch', marginBottom: '4rem' }}>
               A nova geração da tecnologia não vai{' '}
               <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>pedir licença.</em>
             </h2>
@@ -1176,7 +1226,7 @@
               <span className="eyebrow">Os planos</span>
             </div>
 
-            <h2 className="display-md sa" style={{ marginBottom: '4rem', maxWidth: '24ch' }}>
+            <h2 className="display-md sa-reveal" style={{ marginBottom: '4rem', maxWidth: '24ch' }}>
               Dois caminhos.{' '}
               <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>Mesma direção.</em>
             </h2>
@@ -1288,7 +1338,7 @@
               <span className="eyebrow">O que você recebe</span>
             </div>
 
-            <h2 className="display-md sa" style={{ marginBottom: '4rem', maxWidth: '28ch' }}>
+            <h2 className="display-md sa-reveal" style={{ marginBottom: '4rem', maxWidth: '28ch' }}>
               Tudo que precisamos ter quando{' '}
               <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>começamos do zero.</em>
             </h2>
@@ -1518,7 +1568,7 @@
             <p className="eyebrow sa" style={{ color: 'var(--muted)', marginBottom: '2rem' }}>
               XIO Academy · Parauapebas, PA
             </p>
-            <h2 className="sa" data-sd="-40" style={{
+            <h2 className="sa-reveal" data-sd="-40" style={{
               fontFamily: "'Cormorant Garamond', serif", fontWeight: 300,
               fontSize: 'clamp(2.5rem, 7vw, 7rem)',
               lineHeight: 0.95, letterSpacing: '-0.02em',
@@ -1713,7 +1763,7 @@
         const fill = document.getElementById('xio-bar-fill');
         const hero = document.getElementById('hero');
         const wm   = hero?.querySelector('.xio-wm');
-        const SEL  = '.sa, .sa-scale, .sa-left, .sa-img-wrap';
+        const SEL  = '.sa, .sa-scale, .sa-left, .sa-img-wrap, .sa-depth, .sa-reveal';
 
         let raf;
         const engine = () => {
@@ -1724,25 +1774,28 @@
           // Scroll progress bar
           if (fill && max > 0) fill.style.width = `${(sy / max) * 100}%`;
 
-          // Hero parallax: watermark moves 25% of scroll (profundidade)
-          if (wm && hero && sy < hero.offsetHeight * 1.2) {
-            wm.style.transform = `translate(-50%, calc(-50% + ${sy * 0.28}px))`;
+          // Hero: watermark zoom-in — "voando através do XIO" conforme scroll
+          if (wm && hero && sy < hero.offsetHeight * 1.3) {
+            const frac  = Math.min(sy / (hero.offsetHeight * 0.72), 1);
+            const scale = 1 + frac * 0.38;
+            wm.style.transform = `translate(-50%, calc(-50% + ${sy * 0.20}px)) scale(${scale})`;
           }
 
           // Lê todos os rects de uma vez (evita layout thrashing)
           const els   = [...document.querySelectorAll(SEL)];
           const rects = els.map(el => el.getBoundingClientRect());
 
-          // Escreve --p em cada elemento (0=fora, 1=visível)
+          // Escreve --p com ease-out cubic (decelera ao assentar — física real)
           els.forEach((el, i) => {
             if (el.classList.contains('done')) return;
-            const rect = rects[i];
-            const sd   = parseFloat(el.dataset.sd || 0); // offset px
-            // p chega a 1 quando o topo do elemento está a 35% do viewport
-            const raw  = (vh - rect.top + sd) / (vh * 0.65);
-            const p    = Math.max(0, Math.min(1, raw));
+            const rect    = rects[i];
+            const sd      = parseFloat(el.dataset.sd || 0);
+            const raw     = (vh - rect.top + sd) / (vh * 0.65);
+            const clamped = Math.max(0, Math.min(1, raw));
+            // ease-out cubic: p cresce rápido, desacelera no final
+            const p = clamped < 1 ? 1 - Math.pow(1 - clamped, 2.8) : 1;
             el.style.setProperty('--p', p);
-            if (p >= 1) el.classList.add('done'); // libera GPU
+            if (clamped >= 1) el.classList.add('done');
           });
 
           raf = requestAnimationFrame(engine);
