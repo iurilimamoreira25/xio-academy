@@ -816,7 +816,7 @@
         const v = videoRef.current;
         if (!v) return;
         if (v.paused) {
-          v.play();
+          v.play().catch(() => {});
         } else {
           v.pause();
         }
@@ -860,12 +860,12 @@
               Doze segundos para entender <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>o porquê.</em>
             </h2>
 
-            <div className="sa-depth" style={{ maxWidth: 480, margin: '0 auto', width: '100%' }}>
-              {/* Player frame — wrapper controla largura; container define proporção por aspect-ratio */}
+            <div className="sa-depth" style={{ maxWidth: 900, margin: '0 auto', width: '100%' }}>
+              {/* Player frame 16:9 */}
               <div
                 style={{
                   position: 'relative', overflow: 'hidden',
-                  aspectRatio: '9/16', width: '100%',
+                  aspectRatio: '16/9', width: '100%',
                   border: '1px solid var(--line-md)', background: '#000',
                   cursor: 'pointer',
                 }}
@@ -877,7 +877,8 @@
                 <video
                   ref={videoRef}
                   playsInline
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  preload="metadata"
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
                 >
                   <source src="reels_2026-05-07_19-23-40.mp4" type="video/mp4" />
                 </video>
